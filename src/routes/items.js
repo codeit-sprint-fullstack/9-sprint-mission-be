@@ -1,6 +1,7 @@
 import express from "express";
 import { Product } from "../models/product.model.js";
 import { validateProduct } from "../middlewares/validateProduct.js";
+import { NotFoundException } from "../errors/notFoundException.js";
 
 export const itemRouter = express.Router();
 
@@ -23,7 +24,7 @@ itemRouter.get("/:productId", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      throw new Error('not found product')
+      throw new NotFoundException('not found product')
     }
     res.json({
       success: true,
@@ -60,7 +61,7 @@ itemRouter.delete("/:productId", async (req, res, next) => {
     const deleteProduct = await Product.findByIdAndDelete(req.params.id);
 
     if (!deleteProduct) {
-      throw new Error("not found product");
+      throw new NotFoundException("not found product");
     }
     res.json({
       success: true,
@@ -89,7 +90,7 @@ itemRouter.patch("/:productId",validateProduct, async (req, res, next) => {
     );
 
     if (!updateProduct) {
-      throw new Error("failed update product");
+      throw new NotFoundException("failed update product");
     }
 
     res.json({

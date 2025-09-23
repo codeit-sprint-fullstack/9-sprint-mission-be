@@ -5,6 +5,7 @@ import { router } from "./routes/index.js";
 import { cors } from "./middlewares/cors.js";
 import { logger } from "./middlewares/logger.js";
 import { reqTimer } from "./middlewares/reqTimer.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 connectDB();
@@ -20,6 +21,8 @@ if (isDevelopment) {
 app.use(cors);
 
 app.use("/", router);
+
+app.use(errorHandler);
 
 app.listen(config.PORT, () => {
   console.log("Server running on http://localhost:" + config.PORT);
