@@ -1,5 +1,6 @@
 import express from "express";
 import { Product } from "../models/product.model.js";
+import { validateProduct } from "../middlewares/validateProduct.js";
 
 export const itemRouter = express.Router();
 
@@ -35,7 +36,7 @@ itemRouter.get("/:productId", async (req, res, next) => {
   }
 });
 
-itemRouter.post("/", async (req, res, next) => {
+itemRouter.post("/", validateProduct, async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
 
@@ -71,7 +72,7 @@ itemRouter.delete("/:productId", async (req, res, next) => {
   }
 });
 
-itemRouter.patch("/:productId", async (req, res, next) => {
+itemRouter.patch("/:productId",validateProduct, async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
     const { productId } = req.params.id;
