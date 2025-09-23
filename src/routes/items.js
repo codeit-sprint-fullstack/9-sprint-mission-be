@@ -7,12 +7,34 @@ export const itemRouter = express.Router();
 
 itemRouter.get("/", async (req, res, next) => {
   try {
-    const product = await Product.find();
+    const page = Number(req.query.page || 1);
+    const limit = Number(req.query.limit || 10);
+    const total = await Product.countDocuments();
+    const totalPage = Math.ceil(limit / total);
+    const orderBy = String(req.query.orderBy || "recent");
+
+    let sortOptions = {};
+    if (orderBy === "recent") {
+      sortOptions = { createAt: -1 };
+    } else if (orderBy === "oldest") {
+      sortOptions = { createAt: 1 };
+    }
+
+    const product = await Product.find({})
+      .sort(sortOptions)
+      .skip(limit * (page - 1))
+      .limit(limit);
+
     res.json({
       success: true,
       message: "sucess get products",
       data: product,
-      count: product.length,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPage,
+      },
     });
   } catch (error) {
     next(error);
@@ -59,7 +81,7 @@ itemRouter.post("/", validateProduct, async (req, res, next) => {
 
 itemRouter.delete("/:productId", async (req, res, next) => {
   try {
-    const productId = req.params.productId
+    const productId = req.params.productId;
     const deleteProduct = await Product.findByIdAndDelete(productId);
 
     if (!deleteProduct) {
