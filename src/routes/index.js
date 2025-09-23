@@ -1,7 +1,7 @@
 import express from "express";
-// import { itemRouter } from "./items";
+import { itemRouter } from "./items.js";
 
-export const router = express.router();
+export const router = express.Router();
 
 router.get("/", (req, res) => {
   res.json({
@@ -10,4 +10,4 @@ router.get("/", (req, res) => {
   });
 });
 
-// router.use("/items", itemRouter);
+router.use("/items", itemRouter);

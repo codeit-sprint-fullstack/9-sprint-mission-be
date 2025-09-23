@@ -1,8 +1,7 @@
 import express from "express";
-import connectDB from "./db/index";
-import { config } from "./config/config";
-
-const PORT = 3000;
+import { connectDB } from "./db/index.js";
+import { config } from "./config/config.js";
+import { router } from "./routes/index.js";
 
 const app = express();
 connectDB();
@@ -10,6 +9,8 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/", router);
+
 app.listen(config.PORT, () => {
-  console.log("Server running on http://localhost" + config.PORT);
+  console.log("Server running on http://localhost:" + config.PORT);
 });
