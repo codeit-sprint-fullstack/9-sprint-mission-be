@@ -3,25 +3,39 @@ import { Product } from "../models/product.model.js";
 
 export const itemRouter = express.Router();
 
-itemRouter.get("/api/items", async (req, res, next) => {
+itemRouter.get("/", async (req, res, next) => {
   try {
     const product = await Product.find();
+    res.json({
+      success: true,
+      message: 'sucess get products',
+      data: product,
+      count: product.length
+    })
   } catch (error) {
     next(error);
     return;
   }
 });
 
-itemRouter.get("/api/items/:productId", async (req, res, next) => {
+itemRouter.get("/:productId", async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
+    if (!product) {
+      throw new Error('not found product')
+    }
+    res.json({
+      success: true,
+      message: `find product`,
+      data: product
+    })
   } catch (error) {
     next(error);
     return;
   }
 });
 
-itemRouter.post("/api/items", async (req, res, next) => {
+itemRouter.post("/", async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
 
@@ -40,7 +54,7 @@ itemRouter.post("/api/items", async (req, res, next) => {
   }
 });
 
-itemRouter.delete("/api/items/:productId", async (req, res, next) => {
+itemRouter.delete("/:productId", async (req, res, next) => {
   try {
     const deleteProduct = await Product.findByIdAndDelete(req.params.id);
 
@@ -57,7 +71,7 @@ itemRouter.delete("/api/items/:productId", async (req, res, next) => {
   }
 });
 
-itemRouter.patch("/api/items/:productId", async (req, res, next) => {
+itemRouter.patch("/:productId", async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
     const { productId } = req.params.id;

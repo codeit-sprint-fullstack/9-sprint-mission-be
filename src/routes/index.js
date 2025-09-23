@@ -10,4 +10,4 @@ router.get("/", (req, res) => {
   });
 });
 
-router.use("/items", itemRouter);
+router.use("/api/items", itemRouter);
