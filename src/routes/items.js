@@ -10,10 +10,10 @@ itemRouter.get("/", async (req, res, next) => {
     const product = await Product.find();
     res.json({
       success: true,
-      message: 'sucess get products',
+      message: "sucess get products",
       data: product,
-      count: product.length
-    })
+      count: product.length,
+    });
   } catch (error) {
     next(error);
     return;
@@ -22,15 +22,16 @@ itemRouter.get("/", async (req, res, next) => {
 
 itemRouter.get("/:productId", async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
     if (!product) {
-      throw new NotFoundException('not found product')
+      throw new NotFoundException("not found product");
     }
     res.json({
       success: true,
       message: `find product`,
-      data: product
-    })
+      data: product,
+    });
   } catch (error) {
     next(error);
     return;
@@ -58,7 +59,8 @@ itemRouter.post("/", validateProduct, async (req, res, next) => {
 
 itemRouter.delete("/:productId", async (req, res, next) => {
   try {
-    const deleteProduct = await Product.findByIdAndDelete(req.params.id);
+    const productId = req.params.productId
+    const deleteProduct = await Product.findByIdAndDelete(productId);
 
     if (!deleteProduct) {
       throw new NotFoundException("not found product");
@@ -73,10 +75,10 @@ itemRouter.delete("/:productId", async (req, res, next) => {
   }
 });
 
-itemRouter.patch("/:productId",validateProduct, async (req, res, next) => {
+itemRouter.patch("/:productId", validateProduct, async (req, res, next) => {
   try {
+    const { productId } = req.params.productId;
     const { name, description, price, tags } = req.body;
-    const { productId } = req.params.id;
 
     const updateProduct = await Product.findByIdAndUpdate(
       productId,
