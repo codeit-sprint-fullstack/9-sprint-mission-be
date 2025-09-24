@@ -9,9 +9,10 @@ itemRouter.get("/", async (req, res, next) => {
   try {
     const page = Number(req.query.page || 1);
     const limit = Number(req.query.limit || 10);
+    const keyword = String(req.query.keyword || "");
+    const orderBy = String(req.query.orderBy || "recent");
     const total = await Product.countDocuments();
     const totalPage = Math.ceil(limit / total);
-    const orderBy = String(req.query.orderBy || "recent");
 
     let sortOptions = {};
     if (orderBy === "recent") {
@@ -20,7 +21,13 @@ itemRouter.get("/", async (req, res, next) => {
       sortOptions = { createAt: 1 };
     }
 
-    const product = await Product.find({})
+    const product = await Product.find({
+      /** @see https://www.mongodb.com/docs/manual/reference/operator/query/regex/ */
+      $or: [
+        { name: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    })
       .sort(sortOptions)
       .skip(limit * (page - 1))
       .limit(limit);

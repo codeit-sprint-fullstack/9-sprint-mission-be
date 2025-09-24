@@ -15,4 +15,7 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+// name, description에 포함된 단어로 검색 -> 복합 인덱스
+productSchema.index({ name: "text", description: "text" });
+
 export const Product = mongoose.model("Product", productSchema, "products");
