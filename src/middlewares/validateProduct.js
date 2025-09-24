@@ -15,7 +15,7 @@ export const validateProduct = (req, res, next) => {
       name.trim().length < NAME_MIN_LEN
     ) {
       throw new BadRequestException(
-        "상품이름은 1글자 이상 10자 이내여야 합니다"
+        "상품이름은 1글자 이상 10자 이내여야 합니다",
       );
     }
 
@@ -25,7 +25,7 @@ export const validateProduct = (req, res, next) => {
       description.trim().length < DISCRIBE_MIN_LEN
     ) {
       throw new BadRequestException(
-        "상품이름은 2글자 에서 100글자 사이여야 합니다"
+        "상품이름은 2글자 에서 100글자 사이여야 합니다",
       );
     }
 

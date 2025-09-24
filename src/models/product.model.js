@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema(
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
-  }
+  },
 );
 
 // name, description에 포함된 단어로 검색 -> 복합 인덱스
