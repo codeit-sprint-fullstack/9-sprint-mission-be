@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
-    "start": "node src/server.js",
+    "start": "node dist/src/server.js",
+    "build": "npx swc src -d dist && node dist/src/swagger.js",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
     "seed": "node --env-file=./env/.env.development src/seed/seed.js"
@@ -37,10 +38,10 @@
     "express": "^5.1.0",
     "mongoose": "^8.18.2",
     "swagger-autogen": "^2.23.7",
-    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0",
-    "zod": "^4.1.11"
+    "zod": "^4.1.11",
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.13.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

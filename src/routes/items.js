@@ -7,17 +7,20 @@ export const itemRouter = express.Router();
 
 itemRouter.get("/", async (req, res, next) => {
   try {
-    const page = Number(req.query.page || 1);
-    const limit = Number(req.query.limit || 10);
-    const keyword = String(req.query.keyword || "");
-    const orderBy = String(req.query.orderBy || "recent");
+    const {
+      page = 1,
+      limit = 10,
+      keyword = "",
+      orderBy = "recent",
+    } = req.query;
     const total = await Product.countDocuments();
     const totalPage = Math.ceil(limit / total);
 
     let sortOptions = {};
     if (orderBy === "recent") {
       sortOptions = { createAt: -1 };
-    } else if (orderBy === "oldest") {
+    }
+    if (orderBy === "oldest") {
       sortOptions = { createAt: 1 };
     }
 

@@ -7,7 +7,7 @@ const options = {
     description: "API 문서입니다.",
   },
   host: "https://nine-sprint-mission-be.onrender.com/",
-  schemes: ["http"],
+  schemes: ["https"],
 };
 
 const outputFile = "./swagger-output.json";

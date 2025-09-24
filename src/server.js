@@ -8,7 +8,7 @@ import { reqTimer } from "./middlewares/reqTimer.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../swagger-output.json" with { type: "json" };
+import swaggerFile from "./swagger-output.json" with { type: "json" };
 
 const app = express();
 connectDB();
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 if (isDevelopment) {
   app.use(logger);
   app.use(reqTimer);
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  app.use("/api-docs", swaggerUi.serve.swaggerUi.setup(swaggerFile));
 }
 
 app.use(cors);

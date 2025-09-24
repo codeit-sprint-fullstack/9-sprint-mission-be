@@ -8,7 +8,7 @@
   "host": "https://nine-sprint-mission-be.onrender.com/",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/": {
