@@ -4,11 +4,19 @@
   "description": "panda-express-server",
   "main": "src/server.js",
   "scripts": {
+    "postinstall": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
     "start": "node src/server.js",
-    "format": "prettier --write src/**/*.js",
+    "format": "prettier --cache --write src/**/*.js",
+    "lint": "eslint --cache .",
     "seed": "node --env-file=./env/.env.development src/seed/seed.js"
+  },
+  "lint-staged": {
+    "**/*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "repository": {
     "type": "git",
@@ -29,6 +37,9 @@
   "dependencies": {
     "express": "^5.1.0",
     "mongoose": "^8.18.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0",
     "zod": "^4.1.11"
   },
   "devDependencies": {
@@ -36,6 +47,8 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
     "eslint": "^9.36.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2"
   }

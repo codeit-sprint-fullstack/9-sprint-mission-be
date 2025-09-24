@@ -10,6 +10,7 @@ yarn-error.log*
 # Environment variables
 env/
 .env.development
+!.env.example
 
 # IDE 및 편집기 설정
 .idea/
