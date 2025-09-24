@@ -1,15 +1,22 @@
+import { isDevelopment } from "../config/config.js";
+
 export const cors = (req, res, next) => {
   const origin = req.headers.origin || req.headers.host || "";
-  const isDev = process.env.NODE_NEV !== "production";
 
-  const whiteList = [];
-  const isAllowed = isDev || whiteList.includes(origin);
+  const whiteList = ["https://pandasmarket.netlify.app"];
+  const isAllowed = isDevelopment || whiteList.includes(origin);
   if (isAllowed) {
-    res.header("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  res.header("Access-Control-Allow-Method", "GET,POST,PUT,PATCH,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Method",
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
   next();
 };

@@ -4,7 +4,6 @@
   "description": "panda-express-server",
   "main": "src/server.js",
   "scripts": {
-    "postinstall": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
     "start": "node src/server.js",
@@ -37,6 +36,7 @@
   "dependencies": {
     "express": "^5.1.0",
     "mongoose": "^8.18.2",
+    "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",

@@ -1,17 +1,16 @@
- const options = {
-  swaggerDefinition: {
-    openapi: '3.0.3',
-    info: {
-      title: 'API Docs.',
-      version: '1.0.0',
-      description: 'API 문서입니다.',
-    },
-    servers: [
-      {
-        url: 'http://127.0.0.1:5000/api',
-      },
-    ],
+import swaggerAutogen from "swagger-autogen";
+
+const options = {
+  info: {
+    title: "Panda-market-api",
+    version: "1.0.0",
+    description: "API 문서입니다.",
   },
-  apis: ['**/*.js'],
+  host: "https://nine-sprint-mission-be.onrender.com/",
+  schemes: ["http"],
 };
-export default options;
+
+const outputFile = "./swagger-output.json";
+const endpointsFiles = ["./src/routes/index.js"];
+
+swaggerAutogen(outputFile, endpointsFiles, options);
