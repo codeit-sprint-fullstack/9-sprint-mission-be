@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 if (isDevelopment) {
   app.use(logger);
   app.use(reqTimer);
-  app.use("/api-docs", swaggerUi.serve.swaggerUi.setup(swaggerFile));
+  app.use("/api-docs", swaggerUi.serve ,swaggerUi.setup(swaggerFile));
 }
 
 app.use(cors);

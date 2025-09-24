@@ -15,7 +15,7 @@ export const errorHandler = (error, req, res, next) => {
     message: "Internal Server Error",
   };
 
-  if(isDevelopment) {
+  if (isDevelopment) {
     result = { ...result, error };
   }
 

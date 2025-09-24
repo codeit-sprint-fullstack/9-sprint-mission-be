@@ -5,13 +5,15 @@ import { config } from "../config/config.js";
 const seedProducts = [
   {
     name: "무선 이어폰",
-    description: "선명한 사운드와 긴 배터리 수명을 자랑하는 최신 무선 이어폰입니다.",
+    description:
+      "선명한 사운드와 긴 배터리 수명을 자랑하는 최신 무선 이어폰입니다.",
     price: 129000,
     tags: "전자기기, 오디오, 무선",
   },
   {
     name: "스마트 워치",
-    description: "건강 관리와 스마트 알림 기능을 갖춘 세련된 디자인의 스마트 워치입니다.",
+    description:
+      "건강 관리와 스마트 알림 기능을 갖춘 세련된 디자인의 스마트 워치입니다.",
     price: 250000,
     tags: "전자기기, 웨어러블, 스마트",
   },
@@ -23,7 +25,8 @@ const seedProducts = [
   },
   {
     name: "유기농 핸드크림",
-    description: "천연 재료로 만들어 피부를 촉촉하고 부드럽게 가꿔주는 핸드크림입니다.",
+    description:
+      "천연 재료로 만들어 피부를 촉촉하고 부드럽게 가꿔주는 핸드크림입니다.",
     price: 15000,
     tags: "뷰티, 화장품, 유기농",
   },
@@ -47,7 +50,6 @@ async function seedDatabase() {
     // 시드 데이터 삽입
     await Product.insertMany(seedProducts);
     console.log("시드 데이터가 성공적으로 추가되었습니다!");
-
   } catch (error) {
     console.error("데이터 시딩 중 오류 발생:", error);
   } finally {

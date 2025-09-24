@@ -1,11 +1,13 @@
 import express from "express";
 import { Product } from "../models/product.model.js";
 import { validateProduct } from "../middlewares/validateProduct.js";
+import { validateQuery } from "../middlewares/validate.js";
 import { NotFoundException } from "../errors/notFoundException.js";
+import { getItemsSchema } from "../schemas/Items.js";
 
 export const itemRouter = express.Router();
 
-itemRouter.get("/", async (req, res, next) => {
+itemRouter.get("/", validateQuery(getItemsSchema), async (req, res, next) => {
   try {
     const {
       page = 1,
@@ -14,7 +16,7 @@ itemRouter.get("/", async (req, res, next) => {
       orderBy = "recent",
     } = req.query;
     const total = await Product.countDocuments();
-    const totalPage = Math.ceil(limit / total);
+    const totalPage = Math.ceil(total / limit);
 
     let sortOptions = {};
     if (orderBy === "recent") {
