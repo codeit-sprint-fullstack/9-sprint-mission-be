@@ -1,5 +1,4 @@
 import express from "express";
-import { z } from "zod";
 import { Product } from "../models/product.model.js";
 import { validateProduct } from "../middlewares/validateProduct.js";
 import { NotFoundException } from "../errors/notFoundException.js";
@@ -9,10 +8,10 @@ export const itemRouter = express.Router();
 itemRouter.get("/", async (req, res, next) => {
   try {
     const {
-      page = z.number().min(1).default(),
-      limit = z.number().default(10),
-      keyword = z.string().default(""),
-      orderBy = z.enum(["recent", "oldest"]).default("recent"),
+      page = 1,
+      limit = 10,
+      keyword = "",
+      orderBy = "recent",
     } = req.query;
     const total = await Product.countDocuments();
     const totalPage = Math.ceil(limit / total);
@@ -121,7 +120,7 @@ itemRouter.patch("/:productId", validateProduct, async (req, res, next) => {
         price,
         tags,
       },
-      { new: true },
+      { new: true }
     );
 
     if (!updateProduct) {
