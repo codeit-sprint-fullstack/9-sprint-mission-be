@@ -47,6 +47,7 @@ productsRouter.get('/', (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const pageSize = parseInt(req.query.pageSize, 10) || 10;
   const keyword = req.query.keyword;
+  const orderBy = req.query.orderBy;
   const offset = (page - 1) * pageSize;
 
   let filteredItems = mockItems;
@@ -55,6 +56,12 @@ productsRouter.get('/', (req, res) => {
     filteredItems = mockItems.filter(
       (item) =>
         item.name.includes(keyword) || item.description.includes(keyword),
+    );
+  }
+
+  if (orderBy === 'recent') {
+    filteredItems = [...filteredItems].sort(
+      (a, b) => b.createdAt - a.createdAt,
     );
   }
 
