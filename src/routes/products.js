@@ -1,4 +1,5 @@
 import express from 'express';
+import { validateProducts } from '../middlewares/validateProducts.js';
 
 const mockItems = [
   {
@@ -93,7 +94,7 @@ productsRouter.get('/:id', (req, res) => {
   res.json({ success: true, data: item });
 });
 
-productsRouter.post('/', (req, res) => {
+productsRouter.post('/', validateProducts, (req, res) => {
   const { name, description, price, tags } = req.body;
   const newItem = {
     id: nextId++,
@@ -112,7 +113,7 @@ productsRouter.post('/', (req, res) => {
   });
 });
 
-productsRouter.patch('/:id', (req, res) => {
+productsRouter.patch('/:id', validateProducts, (req, res) => {
   const id = parseInt(req.params.id, 10);
   const { name, description, price, tags } = req.body;
 
