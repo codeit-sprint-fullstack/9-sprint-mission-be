@@ -1,6 +1,6 @@
 import express from 'express';
 
-const mokItems = [
+const mockItems = [
   {
     id: 0,
     name: '아이폰 15 프로',
@@ -39,7 +39,7 @@ const mokItems = [
   },
 ];
 
-let newId = 1;
+let nextId = Math.max(...mockItems.map((item) => item.id)) + 1;
 
 export const productsRouter = express.Router();
 
@@ -49,55 +49,55 @@ productsRouter.get('/', (req, res) => {
   const keyword = req.query.keyword;
   const offset = (page - 1) * pageSize;
 
-  const responsItems = keyword
-    ? mokItems
-        .filter((item) => {
-          item.name.includes(keyword) || item.description.includes(keyword);
-        })
-        .slice(offset, offset + pageSize)
-        .map((item) => {
-          (item.id, item.name, item.price, item.createdAt);
-        })
-    : mokItems.slice(offset, offset + pageSize).map((item) => {
-        (item.id, item.name, item.price, item.createdAt);
-      });
+  let filteredItems = mockItems;
+
+  if (keyword) {
+    filteredItems = mockItems.filter(
+      (item) =>
+        item.name.includes(keyword) || item.description.includes(keyword),
+    );
+  }
+
+  const paginatedItems = filteredItems.slice(offset, offset + pageSize);
+
+  const responseItems = paginatedItems.map(
+    ({ id, name, price, createdAt }) => ({ id, name, price, createdAt }),
+  );
 
   res.json({
     success: true,
-    data: responsItems,
+    data: responseItems,
     page,
     pageSize,
-    offset,
-    total: mokItems.length,
+    total: filteredItems.length,
   });
 });
 
 productsRouter.get('/:id', (req, res) => {
-  const { id } = parseInt(req.params.id);
-  const patchIndex = mokItems.findIndex((u) => u.id === id);
-  if (patchIndex === -1) {
+  const id = parseInt(req.params.id, 10);
+  const item = mockItems.find((item) => item.id === id);
+  if (!item) {
     return res.status(404).json({
       success: false,
       message: '상품을 찾을 수 없습니다',
     });
   }
 
-  const responsItem = mokItems.find((item) => item.id === id);
-
-  res.json({ success: true, data: responsItem });
+  res.json({ success: true, data: item });
 });
 
 productsRouter.post('/', (req, res) => {
   const { name, description, price, tags } = req.body;
   const newItem = {
-    id: newId++,
+    id: nextId++,
     name,
     description,
     price,
     tags,
     createdAt: new Date().toISOString(),
   };
-  mokItems.push(newItem);
+
+  mockItems.push(newItem);
   res.status(201).json({
     success: true,
     data: newItem,
@@ -106,34 +106,37 @@ productsRouter.post('/', (req, res) => {
 });
 
 productsRouter.patch('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(req.params.id, 10);
   const { name, description, price, tags } = req.body;
 
-  const patchIndex = mokItems.findIndex((u) => u.id === id);
+  const patchIndex = mockItems.findIndex((item) => item.id === id);
   if (patchIndex === -1) {
     return res.status(404).json({
       success: false,
       message: '상품을 찾을 수 없습니다',
     });
   }
-  mokItems[patchIndex] = {
-    name,
-    description,
-    price,
-    tags,
+
+  const patchedItem = {
+    ...mockItems[patchIndex], // 기존 데이터 유지
+    ...(name && { name }),
+    ...(description && { description }),
+    ...(price && { price }),
+    ...(tags && { tags }),
     updatedAt: new Date().toISOString(),
   };
+  mockItems[patchIndex] = patchedItem;
 
   res.json({
     success: true,
-    data: mokItems[patchIndex],
+    data: patchedItem,
     message: '등록된 상품 내용이 수정되었습니다',
   });
 });
 
 productsRouter.delete('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const deleteIndex = mokItems.findIndex((u) => u.id === id);
+  const id = parseInt(req.params.id, 10);
+  const deleteIndex = mockItems.findIndex((item) => item.id === id);
 
   if (deleteIndex === -1) {
     return res.status(404).json({
@@ -142,8 +145,7 @@ productsRouter.delete('/:id', (req, res) => {
     });
   }
 
-  const deletedItem = mokItems[deleteIndex];
-  mokItems.splice(deleteIndex, 1);
+  const [deletedItem] = mockItems.splice(deleteIndex, 1);
 
   res.json({
     success: true,
