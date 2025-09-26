@@ -5,6 +5,7 @@ const envSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   PORT: z.coerce.number().min(1000).max(65535),
+  MONGO_URI: z.string().startsWith('mongodb+srv://'),
 });
 
 const parseEnvironment = () => {
@@ -12,6 +13,7 @@ const parseEnvironment = () => {
     return envSchema.parse({
       ENVIRONMENT: process.env.NODE_ENV,
       PORT: process.env.PORT,
+      MONGO_URI: process.env.MONGO_URI,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
