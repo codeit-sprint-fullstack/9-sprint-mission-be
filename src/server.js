@@ -3,6 +3,7 @@ import { router } from './routes/index.js';
 import { logger } from './middlewares/logger.js';
 import { requestTimer } from './middlewares/requestTimer.js';
 import { config, isDevelopment } from './config/config.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 
@@ -16,6 +17,8 @@ if (isDevelopment) {
 }
 
 app.use('/', router);
+
+app.use(errorHandler);
 
 app.listen(config.PORT, () => {
   console.log(`🚀 Server running on http://localhost:${config.PORT}`);
