@@ -1,5 +1,6 @@
 import express from 'express';
 import { validateProducts } from '../middlewares/validateProducts.js';
+import { NotFoundException } from '../err/notFoundException.js';
 
 const mockItems = [
   {
@@ -85,10 +86,7 @@ productsRouter.get('/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
   const item = mockItems.find((item) => item.id === id);
   if (!item) {
-    return res.status(404).json({
-      success: false,
-      message: '상품을 찾을 수 없습니다',
-    });
+    throw new NotFoundException('상품을 찾을 수 없습니다');
   }
 
   res.json({ success: true, data: item });
@@ -119,10 +117,7 @@ productsRouter.patch('/:id', validateProducts, (req, res) => {
 
   const patchIndex = mockItems.findIndex((item) => item.id === id);
   if (patchIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: '상품을 찾을 수 없습니다',
-    });
+    throw new NotFoundException('상품을 찾을 수 없습니다');
   }
 
   const patchedItem = {
@@ -147,10 +142,7 @@ productsRouter.delete('/:id', (req, res) => {
   const deleteIndex = mockItems.findIndex((item) => item.id === id);
 
   if (deleteIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      message: '상품을 찾을 수 없습니다',
-    });
+    throw new NotFoundException('상품을 찾을 수 없습니다');
   }
 
   const [deletedItem] = mockItems.splice(deleteIndex, 1);
