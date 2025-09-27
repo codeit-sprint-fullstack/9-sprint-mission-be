@@ -35,7 +35,7 @@ productsRouter.get('/', async (req, res, next) => {
 
     res.json({
       success: true,
-      data: products,
+      list: products,
       page,
       pageSize,
       total,
@@ -52,7 +52,7 @@ productsRouter.get('/:id', async (req, res, next) => {
     if (!product) {
       throw new NotFoundException('상품을 찾을 수 없습니다');
     }
-    res.json({ success: true, data: product });
+    res.json({ success: true, list: product });
   } catch (err) {
     next(err);
   }
@@ -64,7 +64,7 @@ productsRouter.post('/', validateProducts, async (req, res, next) => {
     const newProduct = await Product.create({ name, description, price, tags });
     res.status(201).json({
       success: true,
-      data: newProduct,
+      list: newProduct,
       message: '상품이 정상적으로 추가되었습니다',
     });
   } catch (err) {
@@ -83,7 +83,7 @@ productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
     }
     res.json({
       success: true,
-      data: updatedProduct,
+      list: updatedProduct,
       message: '등록된 상품 내용이 수정되었습니다',
     });
   } catch (err) {
@@ -100,7 +100,7 @@ productsRouter.delete('/:id', async (req, res, next) => {
     }
     res.json({
       success: true,
-      data: deletedProduct,
+      list: deletedProduct,
       message: '상품이 삭제되었습니다',
     });
   } catch (err) {
