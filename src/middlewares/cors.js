@@ -1,11 +1,12 @@
-import { isDevelopment } from '../config/config';
+import { isDevelopment } from '../config/config.js';
 
 export const cors = (req, res, next) => {
-  const origin = req.headers.origin || req.headers.host || '';
-  const whiteList = [];
-  const isAllowed = isDevelopment || whiteList.includes(origin);
+  const origin =
+    req.headers.origin || req.headers.host || req.headers.referer || '';
+  const whiteList = ['http://localhost:5001', 'http://localhost:5173'];
+  const isAllowed = whiteList.includes(origin);
 
-  if (isAllowed) {
+  if (isAllowed || isDevelopment) {
     res.header('Access-Control-Allow-Origin', origin);
   }
 

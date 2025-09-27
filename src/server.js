@@ -5,6 +5,7 @@ import { requestTimer } from './middlewares/requestTimer.js';
 import { config, isDevelopment } from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { connectDB, disconnectDB } from './db/index.js';
+import { cors } from './middlewares/cors.js';
 
 const app = express();
 connectDB();
@@ -12,6 +13,8 @@ connectDB();
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors);
 
 if (isDevelopment) {
   app.use(logger);
