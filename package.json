@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
-    "start": "node --env-file=./etc/secrets/.env.production src/server.js",
+    "start": "node --env-file=/etc/secrets/.env.production src/server.js",
     "format": "prettier --write src/**/*.js",
     "format:check": "prettier --check src/**/*.js"
   },
