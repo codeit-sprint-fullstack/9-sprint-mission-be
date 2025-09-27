@@ -26,7 +26,7 @@ productsRouter.get('/', async (req, res, next) => {
       sortOptions.createdAt = -1;
     }
 
-    const total = await Product.countDocuments(query);
+    const totalCount = await Product.countDocuments(query);
     const products = await Product.find(query)
       .sort(sortOptions)
       .skip(offset)
@@ -38,7 +38,7 @@ productsRouter.get('/', async (req, res, next) => {
       list: products,
       page,
       pageSize,
-      total,
+      totalCount,
     });
   } catch (err) {
     next(err);
