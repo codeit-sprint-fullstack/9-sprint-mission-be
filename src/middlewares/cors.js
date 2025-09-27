@@ -3,7 +3,11 @@ import { isDevelopment } from '../config/config.js';
 export const cors = (req, res, next) => {
   const origin =
     req.headers.origin || req.headers.host || req.headers.referer || '';
-  const whiteList = ['http://localhost:5001', 'http://localhost:5173'];
+  const whiteList = [
+    'http://localhost:5001',
+    'http://localhost:5173',
+    'https://sprint-fs9-fe-8711b7.netlify.app',
+  ];
   const isAllowed = whiteList.includes(origin);
 
   if (isAllowed || isDevelopment) {
