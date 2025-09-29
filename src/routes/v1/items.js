@@ -1,0 +1,24 @@
+import express from "express";
+import { validateProduct } from "../../middlewares/validateProduct.js";
+import { validateQuery } from "../../middlewares/validate.js";
+import { NotFoundException } from "../../common/exceptions/index.js";
+import { getItemsSchema } from "../common/dto/Items.js";
+import {
+  createItem,
+  deleteItem,
+  getItemById,
+  getItems,
+  patchItem,
+} from "../../controllers/v1/item.controller.js";
+
+export const itemRouter = express.Router();
+
+itemRouter.get("/", validateQuery(getItemsSchema), getItems);
+
+itemRouter.get("/:productId", getItemById);
+
+itemRouter.post("/", validateProduct, createItem);
+
+itemRouter.delete("/:productId", deleteItem);
+
+itemRouter.patch("/:productId", validateProduct, patchItem);
