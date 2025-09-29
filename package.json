@@ -11,10 +11,10 @@
     "lint": "eslint --cache .",
     "seed": "node --env-file=./env/.env.development scripts/seed.js",
     "prisma": "dotenv -e ./env/.env.development -- prisma",
-    "db:push": "npm run prisma -- db push",
-    "migreate:dev": "npm run prisma -- migrate dev",
+    "db:push": "npm run prisma -- db push --schema ./prisma/schema",
+    "migreate:dev": "npm run prisma -- migrate dev --schema ./prisma/schema",
     "migreate:reset": "npm run prisma -- migrate reset",
-    "studio": "npm run prisma -- studio"
+    "studio": "npm run prisma -- studio --schema ./prisma/schema"
   },
   "lint-staged": {
     "**/*.ts": [
