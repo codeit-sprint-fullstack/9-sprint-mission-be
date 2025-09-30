@@ -1,5 +1,5 @@
 import express from 'express';
-import { Product } from '../models/product.model.js';
+import { productRepository as Product } from '../repository/product.repository.js';
 import { validateProducts } from '../middlewares/validateProducts.js';
 import { NotFoundException } from '../err/notFoundException.js';
 
@@ -13,25 +13,31 @@ productsRouter.get('/', async (req, res, next) => {
     const orderBy = req.query.orderBy;
     const offset = (page - 1) * pageSize;
 
-    const query = {};
+    const where = {};
     if (keyword) {
-      query.$or = [
-        { name: { $regex: keyword, $options: 'i' } },
-        { description: { $regex: keyword, $options: 'i' } },
+      where.OR = [
+        { name: { contains: keyword, mode: 'insensitive' } },
+        { description: { contains: keyword, mode: 'insensitive' } },
       ];
     }
 
-    const sortOptions = {};
+    const orderByOptions = [];
     if (orderBy === 'recent') {
-      sortOptions.createdAt = -1;
+      orderByOptions.push({ createdAt: 'desc' });
     }
 
-    const totalCount = await Product.countDocuments(query);
-    const products = await Product.find(query)
-      .sort(sortOptions)
-      .skip(offset)
-      .limit(pageSize)
-      .select('id name price createdAt');
+    const [totalCount, products] = await Product.findProductsMany({
+      where,
+      orderBy: orderByOptions,
+      skip: offset,
+      take: pageSize,
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        createdAt: true,
+      },
+    });
 
     res.json({
       success: true,
@@ -48,7 +54,7 @@ productsRouter.get('/', async (req, res, next) => {
 productsRouter.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findProductById(id);
     if (!product) {
       throw new NotFoundException('상품을 찾을 수 없습니다');
     }
@@ -61,7 +67,12 @@ productsRouter.get('/:id', async (req, res, next) => {
 productsRouter.post('/', validateProducts, async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
-    const newProduct = await Product.create({ name, description, price, tags });
+    const newProduct = await Product.createProduct({
+      name,
+      description,
+      price,
+      tags,
+    });
     res.status(201).json({
       success: true,
       list: newProduct,
@@ -75,9 +86,7 @@ productsRouter.post('/', validateProducts, async (req, res, next) => {
 productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedProduct = await Product.updateProduct(id, req.body);
     if (!updatedProduct) {
       throw new NotFoundException('상품을 찾을 수 없습니다');
     }
@@ -94,7 +103,7 @@ productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
 productsRouter.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedProduct = await Product.findByIdAndDelete(id);
+    const deletedProduct = await Product.deleteProduct(id);
     if (!deletedProduct) {
       throw new NotFoundException('상품을 찾을 수 없습니다');
     }
