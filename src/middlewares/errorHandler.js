@@ -1,5 +1,5 @@
 import { isDevelopment } from "../config/config.js";
-import { HttpException } from "../errors/httpException.js";
+import { HttpException } from "../common/exceptions/index.js";
 
 export const errorHandler = (error, req, res, next) => {
   console.error("error", error);

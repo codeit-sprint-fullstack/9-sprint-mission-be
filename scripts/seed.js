@@ -50,6 +50,25 @@ async function main() {
   }
   console.log(`${allPosts.length}개의 게시물이 생성되었습니다.`);
 
+  for (const user of users) {
+    const itemCount = faker.number.int({ min: 1, max: 7 });
+    const itemPromises = Array.from({ length: itemCount }).map(() => {
+      const randomUser =
+        users[faker.number.int({ min: 0, max: users.length - 1 })];
+      return prisma.item.create({
+        data: {
+          userId: randomUser.id,
+          name: faker.commerce.product(),
+          description: faker.lorem.paragraph({ min: 2, max: 7 }),
+          price: faker.commerce.price({ min: 1000, symbol: "₩" }),
+          tags: faker.lorem.sentences({ min: 1, max: 3 }),
+        },
+      });
+    });
+
+    await Promise.all(itemPromises);
+  }
+
   for (const post of allPosts) {
     const commentCount = faker.number.int({ min: 1, max: 10 });
     const commentPromises = Array.from({ length: commentCount }).map(() => {

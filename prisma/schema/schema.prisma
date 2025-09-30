@@ -19,6 +19,7 @@ model User {
   userProfile UserProfile?
   articles    Article[]
   comments    Comment[]
+  items       Item[]
 }
 
 model UserProfile {

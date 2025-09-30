@@ -1,10 +1,13 @@
 model Item {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  userId      Int?
   name        String
   description String
-  price       Int
+  price       String
   tags        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

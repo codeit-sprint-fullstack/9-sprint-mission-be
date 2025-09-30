@@ -1,36 +1,39 @@
-import { Product } from "../../models/product.model.js";
+import { prisma } from "../../db/index.js";
 import { NotFoundException } from "../../common/exceptions/notFoundException.js";
 
 // "get AllItems"
 export const getItems = async (req, res, next) => {
   try {
     const {
-      page = 1,
-      limit = 10,
+      page: pageStr = 1,
+      limit: limitStr = 10,
       keyword = "",
       orderBy = "recent",
     } = req.query;
-    const total = await Product.countDocuments();
+    const page = parseInt(pageStr);
+    const limit = parseInt(limitStr);
+    const total = await prisma.item.count();
     const totalPage = Math.ceil(total / limit);
 
     let sortOptions = {};
     if (orderBy === "recent") {
-      sortOptions = { createAt: -1 };
+      sortOptions = { createdAt: "desc" };
     }
     if (orderBy === "oldest") {
-      sortOptions = { createAt: 1 };
+      sortOptions = { createdAt: "asc" };
     }
 
-    const product = await Product.find({
-      /** @see https://www.mongodb.com/docs/manual/reference/operator/query/regex/ */
-      $or: [
-        { name: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-      ],
-    })
-      .sort(sortOptions)
-      .skip(limit * (page - 1))
-      .limit(limit);
+    const product = await prisma.item.findMany({
+      where: {
+        OR: [
+          { name: { contains: keyword, mode: "insensitive" } },
+          { description: { contains: keyword, mode: "insensitive" } },
+        ],
+      },
+      orderBy: sortOptions,
+      skip: limit * (page - 1),
+      take: limit,
+    });
 
     res.json({
       success: true,
@@ -53,7 +56,10 @@ export const getItems = async (req, res, next) => {
 export const getItemById = async (req, res, next) => {
   try {
     const { itemId } = req.params;
-    const { item } = await Product.findById(itemId);
+    const { item } = await prisma.item.findUnique({
+      where: { id: parseInt(itemId) },
+    });
+
     if (!item) {
       throw new NotFoundException("not found item");
     }
@@ -73,8 +79,14 @@ export const createItem = async (req, res, next) => {
   try {
     const { name, description, price, tags } = req.body;
 
-    const newItem = await Product({ name, description, price, tags });
-    await newItem.save();
+    const newItem = await prisma.item.create({
+      data: {
+        name,
+        description,
+        price,
+        tags,
+      },
+    });
     res.status(201).json({
       success: true,
       message: "success create Item",
@@ -90,12 +102,14 @@ export const createItem = async (req, res, next) => {
 export const deleteItem = async (req, res, next) => {
   try {
     const { itemId } = req.params;
-    const deleteItem = await Product.findByIdAndDelete(itemId);
+    const deleteItem = await prisma.item.findUnique({
+      where: { id: parseInt(itemId) },
+    });
 
     if (!deleteItem) {
       throw new NotFoundException("not found item");
     }
-    res.josn({
+    res.json({
       success: true,
       message: "success delete item",
     });
@@ -111,16 +125,15 @@ export const patchItem = async (req, res, next) => {
     const { itemId } = req.params;
     const { name, description, price, tags } = req.body;
 
-    const updateItem = await Product.findByIdAndUpdate(
-      itemId,
-      {
+    const updateItem = await prisma.item.update({
+      where: { id: parseInt(itemId) },
+      data: {
         name,
         description,
         price,
         tags,
       },
-      { new: true },
-    );
+    });
 
     if (!updateItem) {
       throw new NotFoundException("failed update item");

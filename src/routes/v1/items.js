@@ -1,8 +1,7 @@
 import express from "express";
 import { validateProduct } from "../../middlewares/validateProduct.js";
 import { validateQuery } from "../../middlewares/validate.js";
-import { NotFoundException } from "../../common/exceptions/index.js";
-import { getItemsSchema } from "../common/dto/Items.js";
+import { getItemsSchema } from "../../common/dto/Items.js";
 import {
   createItem,
   deleteItem,
