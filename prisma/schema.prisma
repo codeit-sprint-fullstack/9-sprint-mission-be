@@ -6,10 +6,43 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Article {
+  id        String    @id @default(cuid())
+  title     String    
+  content   String    @db.Text 
+  createdAt DateTime  @default(now()) 
+  updatedAt DateTime  @updatedAt 
+  comments  Comment[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String   
+  description String   @db.Text 
+  price       Decimal  
+  tags        String[] 
+  createdAt   DateTime @default(now()) 
+  updatedAt   DateTime @updatedAt
+  comments    Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid()) 
+  content   String   
+  createdAt DateTime @default(now()) 
+  // Article의 댓글인 경우
+  articleId String?
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade) 
+  // Product의 댓글인 경우
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@index([articleId])
+  @@index([productId])
 }
