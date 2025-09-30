@@ -18,13 +18,12 @@ articleRouter.get("/", async (req, res, next) => {
     const total = await prisma.article.count();
     const totalPage = Math.ceil(total / limit);
 
-    let sortOptions = {};
-    if (orderBy === "recent") {
-      sortOptions = { createdAt: "desc" };
-    }
-    if (orderBy === "oldest") {
-      sortOptions = { createdAt: "asc" };
-    }
+    const SORT_MAP = {
+      recent: { createdAt: "desc" },
+      oldest: { createdAt: "asc" },
+    };
+
+    const sortOptions = SORT_MAP[orderBy] ?? {};
 
     const article = await prisma.article.findMany({
       where: {
@@ -60,6 +59,9 @@ articleRouter.get("/:articleId", async (req, res, next) => {
     const { articleId } = req.params;
     const article = await prisma.article.findUnique({
       where: { id: parseInt(articleId) },
+      include: {
+        Comment: true,
+      },
     });
 
     if (!article) {
