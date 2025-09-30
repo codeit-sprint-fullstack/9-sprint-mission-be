@@ -4,11 +4,10 @@ import { logger } from './middlewares/logger.js';
 import { requestTimer } from './middlewares/requestTimer.js';
 import { config, isDevelopment } from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import { connectDB, disconnectDB } from './db/index.js';
+import { disconnectDB } from './db/prisma.js';
 import { cors } from './middlewares/cors.js';
 
 const app = express();
-connectDB();
 
 app.use(express.json());
 
@@ -32,9 +31,10 @@ const server = app.listen(config.PORT, () => {
 
 const shutdown = (signal) => {
   console.log(`\n${signal} received. Shutting down gracefully...`);
-  server.close(() => {
-    console.log('HTTP server closed.');
-    disconnectDB();
+  server.close(async () => {
+    console.log('✅ HTTP server closed.');
+    await disconnectDB();
+    process.exit(0);
   });
 };
 
