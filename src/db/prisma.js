@@ -1,7 +1,16 @@
 import { PrismaClient } from '@prisma/client';
+import { isDevelopment } from '../config/config.js';
+
+const getPrismaLogLevel = () => {
+  if (!isDevelopment) {
+    return ['warn', 'error'];
+  }
+  //개발 환경에서만 추가 로깅 개방
+  return ['query', 'info', 'warn', 'error'];
+};
 
 export const prisma = new PrismaClient({
-  log: ['info', 'warn', 'error'],
+  log: getPrismaLogLevel(),
 });
 
 export async function disconnectDB() {
