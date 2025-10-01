@@ -12,15 +12,15 @@ async function findArticlesMany(options) {
 }
 
 async function findArticleById(id) {
-  return await prisma.article.findUnique({ where: { id: Number(id) } });
+  return await prisma.article.findUnique({ where: { id: String(id) } });
 }
 
 async function updateArticle(id, data) {
-  return await prisma.article.update({ where: { id: Number(id) }, data });
+  return await prisma.article.update({ where: { id: String(id) }, data });
 }
 
 async function deleteArticle(id) {
-  return await prisma.article.delete({ where: { id: Number(id) } });
+  return await prisma.article.delete({ where: { id: String(id) } });
 }
 
 export const articleRepository = {

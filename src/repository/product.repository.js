@@ -12,15 +12,15 @@ async function findProductsMany(options) {
 }
 
 async function findProductById(id) {
-  return await prisma.product.findUnique({ where: { id: Number(id) } });
+  return await prisma.product.findUnique({ where: { id: String(id) } });
 }
 
 async function updateProduct(id, data) {
-  return await prisma.product.update({ where: { id: Number(id) }, data });
+  return await prisma.product.update({ where: { id: String(id) }, data });
 }
 
 async function deleteProduct(id) {
-  return await prisma.product.delete({ where: { id: Number(id) } });
+  return await prisma.product.delete({ where: { id: String(id) } });
 }
 
 export const productRepository = {
