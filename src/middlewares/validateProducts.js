@@ -20,7 +20,7 @@ export const validateProducts = (req, res, next) => {
   }
 
   if (!price || isNaN(price)) {
-    throw new BadRequestException('상품명은 존재해야하며, 숫자여야 합니다.');
+    throw new BadRequestException('판매 가격은 존재해야하며, 숫자여야 합니다.');
   }
 
   if (!tags || !tags.length) {
