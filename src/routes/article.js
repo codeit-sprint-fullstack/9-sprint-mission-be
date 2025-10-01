@@ -57,7 +57,7 @@ articlesRouter.get('/:id', async (req, res, next) => {
     if (!article) {
       throw new NotFoundException('글을 찾을 수 없습니다');
     }
-    res.json({ success: true, list: article });
+    res.json({ success: true, data: article });
   } catch (err) {
     next(err);
   }
@@ -72,7 +72,7 @@ articlesRouter.post('/', validateArticles, async (req, res, next) => {
     });
     res.status(201).json({
       success: true,
-      list: newArticle,
+      data: newArticle,
       message: '글이 정상적으로 추가되었습니다',
     });
   } catch (err) {
@@ -89,7 +89,7 @@ articlesRouter.patch('/:id', validateArticles, async (req, res, next) => {
     }
     res.json({
       success: true,
-      list: updatedArticle,
+      data: updatedArticle,
       message: '등록된 글 내용이 수정되었습니다',
     });
   } catch (err) {
@@ -106,7 +106,7 @@ articlesRouter.delete('/:id', async (req, res, next) => {
     }
     res.json({
       success: true,
-      list: deletedArticle,
+      data: deletedArticle,
       message: '글이 삭제되었습니다',
     });
   } catch (err) {
