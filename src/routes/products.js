@@ -1,7 +1,9 @@
 import express from 'express';
 import { productRepository as Product } from '../repository/product.repository.js';
-import { validateProducts } from '../middlewares/validateProducts.js';
+import { validateProducts } from '../validators/validateProducts.js';
 import { NotFoundException } from '../err/notFoundException.js';
+import { commentRepository as Comment } from '../repository/comment.repository.js';
+import { validateComments } from '../validators/validateComments.js';
 
 export const productsRouter = express.Router();
 
@@ -116,3 +118,59 @@ productsRouter.delete('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+productsRouter.get('/comments', async (req, res, next) => {
+  try {
+    const [totalCount, comments] = await Comment.findCommentsInProduct();
+
+    res.json({
+      success: true,
+      list: comments,
+      totalCount,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+productsRouter.get('/:productId/comments', async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const [totalCount, comments] =
+      await Comment.findCommentsByProductId(productId);
+
+    res.json({ success: true, list: comments, totalCount });
+  } catch (err) {
+    next(err);
+  }
+});
+
+productsRouter.post(
+  '/:productId/comments',
+  validateComments,
+  async (req, res, next) => {
+    try {
+      const { productId } = req.params;
+      const productExistence = await Product.findProductById(productId);
+      if (!productExistence) {
+        throw new NotFoundException(
+          '댓글을 단 글을 찾을 수가 없어요. 어디다 댓글을 쓴거야?',
+        );
+      }
+      const { content } = req.body;
+      const parent = 'Product';
+      const newProductComment = await Comment.createComment({
+        content,
+        parent,
+        productId,
+      });
+      res.json({
+        success: true,
+        data: newProductComment,
+        message: '댓글이 정상적으로 추가되었습니다',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);

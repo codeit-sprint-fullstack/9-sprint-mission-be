@@ -1,7 +1,9 @@
 import express from 'express';
 import { articleRepository as Article } from '../repository/article.repository.js';
-import { validateArticles } from '../middlewares/validateArticles.js';
+import { validateArticles } from '../validators/validateArticles.js';
 import { NotFoundException } from '../err/notFoundException.js';
+import { commentRepository as Comment } from '../repository/comment.repository.js';
+import { validateComments } from '../validators/validateComments.js';
 
 export const articlesRouter = express.Router();
 
@@ -113,3 +115,59 @@ articlesRouter.delete('/:id', async (req, res, next) => {
     next(err);
   }
 });
+
+articlesRouter.get('/comments', async (req, res, next) => {
+  try {
+    const [totalCount, comments] = await Comment.findCommentsInArticle();
+
+    res.json({
+      success: true,
+      list: comments,
+      totalCount,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+articlesRouter.get('/:articleId/comments', async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    const [totalCount, comments] =
+      await Comment.findCommentsByArticleId(articleId);
+
+    res.json({ success: true, list: comments, totalCount });
+  } catch (err) {
+    next(err);
+  }
+});
+
+articlesRouter.post(
+  '/:articleId/comments',
+  validateComments,
+  async (req, res, next) => {
+    try {
+      const { articleId } = req.params;
+      const articleExistence = await Article.findArticleById(articleId);
+      if (!articleExistence) {
+        throw new NotFoundException(
+          '댓글을 단 글을 찾을 수가 없어요. 어디다 댓글을 쓴거야?',
+        );
+      }
+      const { content } = req.body;
+      const parent = 'Article';
+      const newArticleComment = await Comment.createComment({
+        content,
+        parent,
+        articleId,
+      });
+      res.json({
+        success: true,
+        data: newArticleComment,
+        message: '댓글이 정상적으로 추가되었습니다',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);

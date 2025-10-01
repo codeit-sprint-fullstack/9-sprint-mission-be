@@ -1,6 +1,7 @@
 import express from 'express';
 import { productsRouter } from './products.js';
 import { articlesRouter } from './article.js';
+import { commentsRouter } from './comment.js';
 
 export const router = express.Router();
 
@@ -15,3 +16,4 @@ router.get('/', (req, res) => {
 // 하위 라우트 등록
 router.use('/products', productsRouter);
 router.use('/articles', articlesRouter);
+router.use('/comments', commentsRouter);
