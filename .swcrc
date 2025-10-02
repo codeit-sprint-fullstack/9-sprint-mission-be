@@ -1,0 +1,17 @@
+{
+  "jsc": {
+    "target": "es2020",
+    "parser":{
+      "syntax": "ecmascript"
+    },
+    "minify": {
+      "compress": true,
+      "mangle": true
+    }
+  },
+  "minify": true,
+  "module": {
+    "type": "commonjs"
+  },
+  "sourceMaps": true
+}
