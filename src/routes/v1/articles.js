@@ -32,6 +32,13 @@ articleRouter.get("/", async (req, res, next) => {
           { content: { contains: keyword, mode: "insensitive" } },
         ],
       },
+      include: {
+        author: {
+          include: {
+            userProfile: true,
+          },
+        },
+      },
       orderBy: sortOptions,
       skip: limit * (page - 1),
       take: limit,
@@ -60,7 +67,20 @@ articleRouter.get("/:articleId", async (req, res, next) => {
     const article = await prisma.article.findUnique({
       where: { id: parseInt(articleId) },
       include: {
-        Comment: true,
+        Comment: {
+          include: {
+            author: {
+              include: {
+                userProfile: true,
+              },
+            },
+          },
+        },
+        author: {
+          include: {
+            userProfile: true,
+          },
+        },
       },
     });
 
@@ -114,6 +134,34 @@ articleRouter.patch("/:articleId", async (req, res, next) => {
         title,
         content,
         images,
+      },
+    });
+
+    if (!updateArticle) {
+      throw new NotFoundException("수정에 실패하였습니다.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "success update article",
+      data: updateArticle,
+    });
+  } catch (error) {
+    next(error);
+    return;
+  }
+});
+
+articleRouter.patch("/:articleId/views", async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+
+    const updateArticle = await prisma.article.update({
+      where: { id: parseInt(articleId) },
+      data: {
+        view: {
+          increment: 1,
+        },
       },
     });
 
