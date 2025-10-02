@@ -85,10 +85,11 @@ articlesRouter.post('/', validateArticles, async (req, res, next) => {
 articlesRouter.patch('/:id', validateArticles, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedArticle = await Article.updateArticle(id, req.body);
-    if (!updatedArticle) {
-      throw new NotFoundException('글을 찾을 수 없습니다');
+    const articleExistence = await Article.findArticleById(id);
+    if (!articleExistence) {
+      throw new NotFoundException('글을 찾을 수가 없습니다.');
     }
+    const updatedArticle = await Article.updateArticle(id, req.body);
     res.json({
       success: true,
       data: updatedArticle,
@@ -102,10 +103,11 @@ articlesRouter.patch('/:id', validateArticles, async (req, res, next) => {
 articlesRouter.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedArticle = await Article.deleteArticle(id);
-    if (!deletedArticle) {
-      throw new NotFoundException('글을 찾을 수 없습니다');
+    const articleExistence = await Article.findArticleById(id);
+    if (!articleExistence) {
+      throw new NotFoundException('글을 찾을 수가 없습니다.');
     }
+    const deletedArticle = await Article.deleteArticle(id);
     res.json({
       success: true,
       data: deletedArticle,

@@ -88,10 +88,11 @@ productsRouter.post('/', validateProducts, async (req, res, next) => {
 productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const updatedProduct = await Product.updateProduct(id, req.body);
-    if (!updatedProduct) {
-      throw new NotFoundException('상품을 찾을 수 없습니다');
+    const productExistence = await Product.findProductById(id);
+    if (!productExistence) {
+      throw new NotFoundException('상품을 찾을 수가 없습니다.');
     }
+    const updatedProduct = await Product.updateProduct(id, req.body);
     res.json({
       success: true,
       data: updatedProduct,
@@ -105,10 +106,11 @@ productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
 productsRouter.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedProduct = await Product.deleteProduct(id);
-    if (!deletedProduct) {
-      throw new NotFoundException('상품을 찾을 수 없습니다');
+    const productExistence = await Product.findProductById(id);
+    if (!productExistence) {
+      throw new NotFoundException('상품을 찾을 수가 없습니다.');
     }
+    const deletedProduct = await Product.deleteProduct(id);
     res.json({
       success: true,
       data: deletedProduct,
