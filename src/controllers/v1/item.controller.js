@@ -1,5 +1,10 @@
 import { prisma } from "../../db/index.js";
 import { NotFoundException } from "../../common/exceptions/notFoundException.js";
+import { HttpStatus } from "../../common/constants/httpStatus.js";
+import {
+  FAILED_UPDATE_ITEM,
+  NOT_FOUND_ITEM,
+} from "../../common/constants/errorMessage.js";
 
 // "get AllItems"
 export const getItems = async (req, res, next) => {
@@ -34,7 +39,7 @@ export const getItems = async (req, res, next) => {
       take: limit,
     });
 
-    res.json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "sucess get products",
       data: product,
@@ -60,9 +65,9 @@ export const getItemById = async (req, res, next) => {
     });
 
     if (!item) {
-      throw new NotFoundException("not found item");
+      throw new NotFoundException(NOT_FOUND_ITEM);
     }
-    res.json({
+    res.status(HttpStatus.OK).json({
       sucess: true,
       message: "fined items",
       data: item,
@@ -86,7 +91,7 @@ export const createItem = async (req, res, next) => {
         tags,
       },
     });
-    res.status(201).json({
+    res.status(HttpStatus.CREATED).json({
       success: true,
       message: "success create Item",
       data: newItem,
@@ -106,9 +111,9 @@ export const deleteItem = async (req, res, next) => {
     });
 
     if (!deleteItem) {
-      throw new NotFoundException("not found item");
+      throw new NotFoundException(NOT_FOUND_ITEM);
     }
-    res.json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success delete item",
     });
@@ -135,10 +140,10 @@ export const patchItem = async (req, res, next) => {
     });
 
     if (!updateItem) {
-      throw new NotFoundException("failed update item");
+      throw new NotFoundException(FAILED_UPDATE_ITEM);
     }
 
-    res.json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success update item",
       data: updateItem,
