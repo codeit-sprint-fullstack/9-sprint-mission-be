@@ -1,6 +1,13 @@
 import express from "express";
 import { prisma } from "../../db/index.js";
 import { NotFoundException } from "../../common/exceptions/index.js";
+import { HttpStatus } from "../../common/constants/httpStatus.js";
+import {
+  FAILED_DELETE_ARTICLE,
+  FAILED_UPDATE_ARTICLE,
+  FAILED_UPDATE_ARTICLE_VIEW,
+  NOT_FOUND_ARTICLE,
+} from "../../common/constants/errorMessage.js";
 
 export const articleRouter = express.Router();
 
@@ -44,7 +51,7 @@ articleRouter.get("/", async (req, res, next) => {
       take: limit,
     });
 
-    res.status(200).json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success get articls",
       data: article,
@@ -85,10 +92,10 @@ articleRouter.get("/:articleId", async (req, res, next) => {
     });
 
     if (!article) {
-      throw new NotFoundException("해당게시물을 찾을수없습니다.");
+      throw new NotFoundException(NOT_FOUND_ARTICLE);
     }
 
-    res.status(200).json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success get article",
       data: article,
@@ -112,7 +119,7 @@ articleRouter.post("/", async (req, res, next) => {
       },
     });
 
-    res.status(201).json({
+    res.status(HttpStatus.CREATED).json({
       success: true,
       message: "success create article",
       data: newArticle,
@@ -138,10 +145,10 @@ articleRouter.patch("/:articleId", async (req, res, next) => {
     });
 
     if (!updateArticle) {
-      throw new NotFoundException("수정에 실패하였습니다.");
+      throw new NotFoundException(FAILED_UPDATE_ARTICLE);
     }
 
-    res.status(200).json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success update article",
       data: updateArticle,
@@ -166,10 +173,10 @@ articleRouter.patch("/:articleId/views", async (req, res, next) => {
     });
 
     if (!updateArticle) {
-      throw new NotFoundException("수정에 실패하였습니다.");
+      throw new NotFoundException(FAILED_UPDATE_ARTICLE_VIEW);
     }
 
-    res.status(200).json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success update article",
       data: updateArticle,
@@ -188,17 +195,17 @@ articleRouter.delete("/:articleId", async (req, res, next) => {
     });
 
     if (!deleteArticle) {
-      throw new NotFoundException("게시물을 찾을 수 없습니다.");
+      throw new NotFoundException(NOT_FOUND_ARTICLE);
     }
 
-    res.status(200).json({
+    res.status(HttpStatus.OK).json({
       success: true,
       message: "success delete article",
       data: deleteArticle,
     });
   } catch (error) {
     if (error.code === "P2025") {
-      next(new NotFoundException("Failed delete article"));
+      next(new NotFoundException(FAILED_DELETE_ARTICLE));
     } else {
       next(error);
     }
