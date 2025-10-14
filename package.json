@@ -1,19 +1,24 @@
 {
   "name": "codeit-backend-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "panda-express-server",
   "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
     "start": "node dist/src/server.js",
     "build": "npx swc src -d dist && node dist/src/swagger.js",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
-    "seed": "node --env-file=./env/.env.development src/seed/seed.js"
+    "seed": "node --env-file=./env/.env.development scripts/seed.js",
+    "prisma": "dotenv -e ./env/.env.development -- prisma",
+    "db:push": "npm run prisma -- db push --schema ./prisma/schema",
+    "migrate:dev": "npm run prisma -- migrate dev --schema ./prisma/schema",
+    "migrate:deploy": "npm run prisma -- migrate deploy --schema ./prisma/schema",
+    "migrate:reset": "npm run prisma -- migrate reset --schema ./prisma/schema",
+    "studio": "npm run prisma -- studio --schema ./prisma/schema"
   },
   "lint-staged": {
-    "**/*.ts": [
+    "**/*.(js.jsx.ts.tsx)": [
       "prettier --write",
       "eslint --fix"
     ]
@@ -35,22 +40,26 @@
   },
   "homepage": "https://github.com/rklpoi5678/9-sprint-mission-be#readme",
   "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.13.5",
+    "@faker-js/faker": "^10.0.0",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "mongoose": "^8.18.2",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
-    "zod": "^4.1.11",
-    "@swc/cli": "^0.7.8",
-    "@swc/core": "^1.13.5"
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
     "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.2"
   }
 }

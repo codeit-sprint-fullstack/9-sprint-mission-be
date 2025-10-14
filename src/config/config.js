@@ -3,7 +3,7 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]),
   PORT: z.coerce.number().min(1000).max(65535),
-  MONGO_URI: z.string().startsWith("mongodb+srv://"),
+  POSTGRESQL_URI: z.string().startsWith("postgresql://"),
 });
 
 const parseEnviroment = () => {
@@ -11,7 +11,7 @@ const parseEnviroment = () => {
     return envSchema.parse({
       NODE_ENV: process.env.NODE_ENV,
       PORT: process.env.PORT,
-      MONGO_URI: process.env.MONGO_URI,
+      POSTGRESQL_URI: process.env.POSTGRESQL_URI,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

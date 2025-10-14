@@ -1,0 +1,11 @@
+const config = {
+  printWidth: 80,
+  tabWidth: 2,
+  bracketSpacing: true,
+  arrowParens: "always",
+  trailingComma: "all",
+  semi: true,
+  singleQuote: true,
+};
+
+export default config;
