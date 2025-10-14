@@ -1,13 +1,11 @@
-import { isDevelopment } from '../config/config.js';
+import { isDevelopment, config } from '../config/config.js';
 
 export const cors = (req, res, next) => {
   const origin =
     req.headers.origin || req.headers.host || req.headers.referer || '';
-  const whiteList = [
-    'http://localhost:5001',
-    'http://localhost:5173',
-    'https://sprint-fs9-fe-8711b7.netlify.app',
-  ];
+  const whiteList = config.FRONT_URL
+    ? config.FRONT_URL.split(',').map((url) => url.trim())
+    : [];
   const isAllowed = whiteList.includes(origin);
 
   if (isAllowed || isDevelopment) {

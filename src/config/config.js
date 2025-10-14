@@ -5,7 +5,8 @@ const envSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   PORT: z.coerce.number().min(1000).max(65535),
-  MONGO_URI: z.string().startsWith('mongodb+srv://'),
+  DATABASE_URL: z.string().startsWith('postgresql://'),
+  FRONT_URL: z.string(),
 });
 
 const parseEnvironment = () => {
@@ -13,11 +14,12 @@ const parseEnvironment = () => {
     return envSchema.parse({
       ENVIRONMENT: process.env.NODE_ENV,
       PORT: process.env.PORT,
-      MONGO_URI: process.env.MONGO_URI,
+      DATABASE_URL: process.env.DATABASE_URL,
+      FRONT_URL: process.env.FRONT_URL,
     });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.log('error.errors', error);
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      console.log('error.errors', err);
     }
     process.exit(1);
   }
