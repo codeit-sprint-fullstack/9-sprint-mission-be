@@ -7,40 +7,40 @@ async function createComment(data) {
 async function findCommentsInArticle() {
   return await prisma.$transaction([
     prisma.comment.count({ where: { parent: String('Article') } }),
-    prisma.comment.findMany(
-      { where: { parent: String('Article') } },
-      { orderBy: { createdAt: 'desc' } },
-    ),
+    prisma.comment.findMany({
+      where: { parent: String('Article') },
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
 }
 
 async function findCommentsByArticleId(articleId) {
   return await prisma.$transaction([
     prisma.comment.count({ where: { articleId: String(articleId) } }),
-    prisma.comment.findMany(
-      { where: { parent: String('Article') } },
-      { orderBy: { createdAt: 'desc' } },
-    ),
+    prisma.comment.findMany({
+      where: { articleId: String(articleId) },
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
 }
 
 async function findCommentsInProduct() {
   return await prisma.$transaction([
     prisma.comment.count({ where: { parent: String('Product') } }),
-    prisma.comment.findMany(
-      { where: { parent: String('Product') } },
-      { orderBy: { createdAt: 'desc' } },
-    ),
+    prisma.comment.findMany({
+      where: { parent: String('Product') },
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
 }
 
 async function findCommentsByProductId(productId) {
   return await prisma.$transaction([
     prisma.comment.count({ where: { productId: String(productId) } }),
-    prisma.comment.findMany(
-      { where: { parent: String('Product') } },
-      { orderBy: { createdAt: 'desc' } },
-    ),
+    prisma.comment.findMany({
+      where: { productId: String(productId) },
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
 }
 
