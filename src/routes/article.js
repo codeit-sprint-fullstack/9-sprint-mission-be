@@ -10,7 +10,8 @@ export const articlesRouter = express.Router();
 articlesRouter.get('/', async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+    const pageSize =
+      parseInt(req.query.pageSize, 10) || Number.MAX_SAFE_INTEGER;
     const keyword = req.query.keyword;
     const orderBy = req.query.orderBy;
     const offset = (page - 1) * pageSize;
