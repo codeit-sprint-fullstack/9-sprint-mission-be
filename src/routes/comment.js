@@ -15,8 +15,8 @@ commentsRouter.patch('/:id', validateComments, async (req, res, next) => {
     const updatedComment = await Comment.updateComment(id, req.body);
     res.json({
       success: true,
-      data: updatedComment,
       message: '등록된 글 내용이 수정되었습니다',
+      ...updatedComment,
     });
   } catch (err) {
     next(err);
@@ -33,8 +33,8 @@ commentsRouter.delete('/:id', async (req, res, next) => {
     const deletedComment = await Comment.deleteComment(id);
     res.json({
       success: true,
-      data: deletedComment,
       message: '글이 삭제되었습니다',
+      id: deletedComment.id,
     });
   } catch (err) {
     next(err);
