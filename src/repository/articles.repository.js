@@ -23,7 +23,7 @@ async function deleteArticle(id) {
   return await prisma.article.delete({ where: { id: String(id) } });
 }
 
-export const articleRepository = {
+export const articlesRepository = {
   createArticle,
   findArticleById,
   findArticlesMany,

@@ -1,8 +1,8 @@
 import express from 'express';
-import { articleRepository as Article } from '../repository/article.repository.js';
+import { articlesRepository as Article } from '../repository/articles.repository.js';
 import { validateArticles } from '../validators/validateArticles.js';
 import { NotFoundException } from '../err/notFoundException.js';
-import { commentRepository as Comment } from '../repository/comment.repository.js';
+import { commentRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
 
 export const articlesRouter = express.Router();

@@ -56,7 +56,7 @@ async function deleteComment(id) {
   return await prisma.comment.delete({ where: { id: String(id) } });
 }
 
-export const commentRepository = {
+export const commentsRepository = {
   findCommentsInArticle,
   findCommentsInProduct,
   findCommentsByArticleId,

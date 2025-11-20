@@ -1,8 +1,8 @@
 import express from 'express';
-import { productRepository as Product } from '../repository/product.repository.js';
+import { productsRepository as Product } from '../repository/products.repository.js';
 import { validateProducts } from '../validators/validateProducts.js';
 import { NotFoundException } from '../err/notFoundException.js';
-import { commentRepository as Comment } from '../repository/comment.repository.js';
+import { commentRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
 
 export const productsRouter = express.Router();

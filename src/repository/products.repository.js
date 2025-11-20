@@ -23,7 +23,7 @@ async function deleteProduct(id) {
   return await prisma.product.delete({ where: { id: String(id) } });
 }
 
-export const productRepository = {
+export const productsRepository = {
   createProduct,
   findProductById,
   findProductsMany,
