@@ -7,7 +7,7 @@ const envSchema = z.object({
   DIRECT_URL: z.string().startsWith("postgresql://"),
 });
 
-const parseEnviroment = () => {
+const parseEnvironment = () => {
   try {
     return envSchema.parse({
       NODE_ENV: process.env.NODE_ENV,
@@ -23,7 +23,7 @@ const parseEnviroment = () => {
   }
 };
 
-export const config = parseEnviroment();
+export const config = parseEnvironment();
 export const isDevelopment = config.NODE_ENV === "development";
 export const isProduction = config.NODE_ENV === "production";
 export const isTest = config.NODE_ENV === "test";

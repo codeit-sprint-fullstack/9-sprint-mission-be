@@ -11,5 +11,5 @@ router.get("/", (req, res) => {
   });
 });
 
-router.use("/api/v1/items", itemRouter);
-router.use("/api/v1/articles", articleRouter);
+router.use("/items", itemRouter);
+router.use("/articles", articleRouter);
