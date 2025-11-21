@@ -2,8 +2,9 @@ import express from 'express';
 import { productsRepository as Product } from '../repository/products.repository.js';
 import { validateProducts } from '../validators/validateProducts.js';
 import { NotFoundException } from '../err/notFoundException.js';
-import { commentRepository as Comment } from '../repository/comments.repository.js';
+import { commentsRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
+import { parsePagination } from '../middlewares/pagination.middleware.js';
 
 export const productsRouter = express.Router();
 
@@ -121,31 +122,38 @@ productsRouter.delete('/:id', async (req, res, next) => {
   }
 });
 
-productsRouter.get('/comments', async (req, res, next) => {
+productsRouter.get('/comments', parsePagination, async (req, res, next) => {
   try {
-    const [totalCount, comments] = await Comment.findCommentsInProduct();
+    const { comments, nextCursor } = await Comment.findCommentsInProduct(
+      req.pagination,
+    );
 
     res.json({
       success: true,
       list: comments,
-      totalCount,
+      nextCursor,
     });
   } catch (err) {
     next(err);
   }
 });
 
-productsRouter.get('/:productId/comments', async (req, res, next) => {
-  try {
-    const { productId } = req.params;
-    const [totalCount, comments] =
-      await Comment.findCommentsByProductId(productId);
-
-    res.json({ success: true, list: comments, totalCount });
-  } catch (err) {
-    next(err);
-  }
-});
+productsRouter.get(
+  '/:productId/comments',
+  parsePagination,
+  async (req, res, next) => {
+    try {
+      const { productId } = req.params;
+      const { comments, nextCursor } = await Comment.findCommentsByProductId({
+        productId,
+        ...req.pagination,
+      });
+      res.json({ success: true, list: comments, nextCursor });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 productsRouter.post(
   '/:productId/comments',

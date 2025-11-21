@@ -2,8 +2,9 @@ import express from 'express';
 import { articlesRepository as Article } from '../repository/articles.repository.js';
 import { validateArticles } from '../validators/validateArticles.js';
 import { NotFoundException } from '../err/notFoundException.js';
-import { commentRepository as Comment } from '../repository/comments.repository.js';
+import { commentsRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
+import { parsePagination } from '../middlewares/pagination.middleware.js';
 
 export const articlesRouter = express.Router();
 
@@ -119,31 +120,39 @@ articlesRouter.delete('/:id', async (req, res, next) => {
   }
 });
 
-articlesRouter.get('/comments', async (req, res, next) => {
+articlesRouter.get('/comments', parsePagination, async (req, res, next) => {
   try {
-    const [totalCount, comments] = await Comment.findCommentsInArticle();
+    const { comments, nextCursor } = await Comment.findCommentsInArticle(
+      req.pagination,
+    );
 
     res.json({
       success: true,
       list: comments,
-      totalCount,
+      nextCursor,
     });
   } catch (err) {
     next(err);
   }
 });
 
-articlesRouter.get('/:articleId/comments', async (req, res, next) => {
-  try {
-    const { articleId } = req.params;
-    const [totalCount, comments] =
-      await Comment.findCommentsByArticleId(articleId);
+articlesRouter.get(
+  '/:articleId/comments',
+  parsePagination,
+  async (req, res, next) => {
+    try {
+      const { articleId } = req.params;
+      const { comments, nextCursor } = await Comment.findCommentsByArticleId({
+        articleId,
+        ...req.pagination,
+      });
 
-    res.json({ success: true, list: comments, totalCount });
-  } catch (err) {
-    next(err);
-  }
-});
+      res.json({ success: true, list: comments, nextCursor });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 articlesRouter.post(
   '/:articleId/comments',
