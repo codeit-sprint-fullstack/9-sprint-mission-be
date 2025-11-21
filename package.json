@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "panda-express-server",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
     "start": "node dist/src/server.js",

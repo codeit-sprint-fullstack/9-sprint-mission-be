@@ -1,5 +1,5 @@
 // prisma client 설정
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/client.ts";
 import { exit } from "node:process";
 import { PrismaPg } from "@prisma/adapter-pg";
 
