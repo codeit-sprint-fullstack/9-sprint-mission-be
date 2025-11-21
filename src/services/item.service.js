@@ -1,50 +1,31 @@
-import { prisma } from "../db/prisma.js";
 import { NotFoundException } from "../common/exceptions/index.js";
 import { NOT_FOUND_ITEM } from "../common/constants/index.js";
+import { itemRepository } from "../repositories/item.repository.js";
 
-// "get AllItems"
+// "di"
 export class ItemService {
-  constructor(prismaClient) {
-    this.prisma = prismaClient;
+  constructor(itemRepository) {
+    this.itemRepository = itemRepository;
   }
 
   async getItems({ page, limit, keyword, orderBy }) {
     const skip = (page - 1) * limit;
 
-    const sortOptions = {
-      recent: { createdAt: "desc" },
-      oldest: { createdAt: "asc" },
-    }[orderBy] ?? { createdAt: "desc" };
-
-    const where = {
-      OR: [
-        { name: { contains: keyword, mode: "insensitive" } },
-        { description: { contains: keyword, mode: "insensitive" } },
-      ],
-    };
-
-    const [items, total] = await Promise.all([
-      prisma.item.findMany({
-        where,
-        orderBy: sortOptions,
-        skip,
-        take: limit,
-      }),
-      prisma.item.count({ where }),
-    ]);
-
+    const { items, total } = await this.itemRepository.findAll({
+      keyword,
+      orderBy,
+      skip,
+      take: limit,
+    });
     return {
       items,
       total,
       totalPage: Math.ceil(total / limit),
     };
   }
-  // getItemsById
+
   async getItemById(itemId) {
-    const item = await this.prisma.item.findUnique({
-      where: { id: itemId },
-      include: { user: true },
-    });
+    const item = await this.itemRepository.findById(itemId);
 
     if (!item) {
       throw new NotFoundException(NOT_FOUND_ITEM);
@@ -53,16 +34,12 @@ export class ItemService {
   }
 
   async createItem(data) {
-    return await this.prisma.item.create({ data });
+    return await this.itemRepository.create(data);
   }
-  //patchItemHandler
-  async patchItem(itemId, data) {
+
+  async updateItem(itemId, data) {
     try {
-      const updateItem = await this.prisma.item.update({
-        where: { id: itemId },
-        data,
-      });
-      return updateItem;
+      return await this.itemRepository.update(itemId, data);
     } catch (error) {
       if (error.code === "P2025") {
         throw new NotFoundException(NOT_FOUND_ITEM);
@@ -72,16 +49,16 @@ export class ItemService {
   }
 
   async deleteItem(itemId) {
-    const deletedItem = await this.prisma.item.update({
-      where: { id: itemId },
-      data: { deletedAt: new Date() },
-    });
-
-    if (!deleteItem) {
-      throw new NotFoundException(NOT_FOUND_ITEM);
+    try {
+      const deletedItem = await this.itemRepository.delete(itemId);
+      return deletedItem;
+    } catch (error) {
+      if (error.code === "P2025") {
+        throw new NotFoundException(NOT_FOUND_ITEM);
+      }
+      throw error;
     }
-    return deletedItem;
   }
 }
 
-export const itemService = new ItemService(prisma);
+export const itemService = new ItemService(itemRepository);
