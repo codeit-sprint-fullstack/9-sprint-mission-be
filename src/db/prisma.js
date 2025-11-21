@@ -1,5 +1,7 @@
+// prisma client 설정
 import { PrismaClient } from "@prisma/client";
 import { exit } from "node:process";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const getPrismaLogLevel = () => {
   if (process.env.NODE_ENV === "production") {
@@ -7,8 +9,10 @@ const getPrismaLogLevel = () => {
   }
   return ["query", "info", "warn", "error"];
 };
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 
 export const prisma = new PrismaClient({
+  adapter,
   log: getPrismaLogLevel(),
 });
 

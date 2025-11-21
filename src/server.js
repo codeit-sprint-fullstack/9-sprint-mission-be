@@ -1,5 +1,5 @@
 import express from "express";
-import { connectDB } from "./db/index.js";
+import { connectDB } from "./db/prisma.js";
 import { config, isDevelopment } from "./config/config.js";
 import { router } from "./routes/index.js";
 import { cors } from "./middlewares/cors.js";
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 if (isDevelopment) {
   app.use(logger);
   app.use(reqTimer);
-  app.use("/api-docs", swaggerUi.serve ,swaggerUi.setup(swaggerFile));
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 }
 
 app.use(cors);

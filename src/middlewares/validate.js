@@ -3,28 +3,35 @@ import { HttpStatus } from "../common/constants/httpStatus.js";
 
 export const validateQuery = (schema) => (req, res, next) => {
   try {
-    schema.parse(req.query);
+    req.body = schema.parse(req.query);
+    next();
   } catch (error) {
     if (error instanceof z.ZodError)
       return res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
-        message: "Failed validateQuery",
-        errors: error.issues,
+        message: "유효성 검사 실패",
+        errors: error.errors.map((e) => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
       });
     next(error);
   }
-  next();
 };
 
 export const validateBody = (schema) => (req, res, next) => {
   try {
-    schema.parse(req.body);
+    req.body = schema.parse(req.body);
+    next();
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
-        message: "Faild validateBody",
-        errors: error.issues,
+        message: "유효성 검사 실패",
+        errors: error.errors.map((e) => ({
+          field: e.path.join("."),
+          message: e.message,
+        })),
       });
     }
     next(error);

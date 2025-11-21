@@ -1,7 +1,7 @@
 {
   "jsc": {
     "target": "es2020",
-    "parser":{
+    "parser": {
       "syntax": "ecmascript"
     },
     "minify": {
@@ -12,5 +12,5 @@
   "minify": true,
   "module": {
     "type": "commonjs"
-  },
+  }
 }

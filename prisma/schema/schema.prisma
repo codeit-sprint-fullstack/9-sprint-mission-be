@@ -1,20 +1,22 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRESQL_URI")
+  provider  = "postgresql"
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  nickname              String
+  encryptedPassword     String
+  // 여러 기기 동시 로그인을 지원등 확장성이 필요할때 
+  // 해당 스키마 테이블을 따로 관리 (구글,넷플릭스,네이버). 
+  refreshToken          String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
 
   userProfile UserProfile?
   articles    Article[]
@@ -23,8 +25,8 @@ model User {
 }
 
 model UserProfile {
-  id       Int     @id @default(autoincrement())
-  userId   Int     @unique
+  id       String     @id @default(cuid())
+  userId   String     @unique
   photoUrl String?
   bio      String?
   user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)

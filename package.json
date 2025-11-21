@@ -11,11 +11,11 @@
     "lint": "eslint --cache .",
     "seed": "node --env-file=./env/.env.development scripts/seed.js",
     "prisma": "dotenv -e ./env/.env.development -- prisma",
-    "db:push": "npm run prisma -- db push --schema ./prisma/schema",
-    "migrate:dev": "npm run prisma -- migrate dev --schema ./prisma/schema",
-    "migrate:deploy": "npm run prisma -- migrate deploy --schema ./prisma/schema",
-    "migrate:reset": "npm run prisma -- migrate reset --schema ./prisma/schema",
-    "studio": "npm run prisma -- studio --schema ./prisma/schema"
+    "db:push": "npm run prisma -- db push",
+    "migrate:dev": "npm run prisma -- migrate dev ",
+    "migrate:deploy": "npm run prisma -- migrate deploy",
+    "migrate:reset": "npm run prisma -- migrate reset",
+    "studio": "npm run prisma -- studio"
   },
   "lint-staged": {
     "**/*.(js.jsx.ts.tsx)": [
@@ -32,21 +32,26 @@
   ],
   "author": {
     "name": "youngi-kim",
-    "email": "rklpoi5678@naver.com"
+    "email": "rklpoi5678@naver.com",
+    "url": "https://github.com/rklpoi5678"
   },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rklpoi5678/9-sprint-mission-be/issues"
   },
+  "engines": {
+    "node": ">=24.x",
+    "npm": ">=11.x"
+  },
   "homepage": "https://github.com/rklpoi5678/9-sprint-mission-be#readme",
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@faker-js/faker": "^10.0.0",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
     "@swc/cli": "^0.7.8",
     "@swc/core": "^1.13.5",
-    "@faker-js/faker": "^10.0.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.1.11"
   },
@@ -54,12 +59,13 @@
     "@eslint/js": "^9.36.0",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "prisma": "^6.16.2"
+    "prisma": "^7.0.0"
   }
 }
