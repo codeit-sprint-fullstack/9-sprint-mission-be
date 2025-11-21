@@ -18,10 +18,13 @@ model User {
   updatedAt             DateTime  @updatedAt
   deletedAt             DateTime?
 
-  userProfile UserProfile?
-  articles    Article[]
-  comments    Comment[]
-  items       Item[]
+  userProfile     UserProfile?
+  articles        Article[]
+  ItemComments    ItemComment[] 
+  articleReviews ArticleReview[]
+  items           Item[]
+  ItemLikes       ItemLike[]
+  articleLikes    ArticleLike[]
 }
 
 model UserProfile {

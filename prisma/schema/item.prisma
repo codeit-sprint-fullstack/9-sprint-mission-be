@@ -1,13 +1,44 @@
 model Item {
-  id          Int       @id @default(autoincrement())
-  userId      Int?
+  id          String      @id @default(cuid())
+  authorId    String
   name        String
   description String
   price       String
-  tags        String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
 
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ItemComments ItemComment[] 
+
+  user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      Tag[]
+  ItemLikes ItemLike[]
+}
+
+model ItemComment {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+model ItemLike {
+  id        String   @id @default(cuid())
+  userId    String 
+  itemId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete:Cascade)
+
+  @@unique([itemId, userId])
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String 
+  items Item[]
 }
