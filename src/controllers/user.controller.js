@@ -33,10 +33,19 @@ export class UserController {
         password,
       });
 
+      const accessToken = this.userService.createToken(user);
+      const refreshToken = this.userService.createToken(user, "refresh");
+      await this.userService.updateUser(user.id, { refreshToken });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+
       res.status(HttpStatus.OK).json({
         success: true,
         message: "로그인에 성공하였습니다.",
-        data: user,
+        data: { ...user, accessToken },
       });
     } catch (error) {
       next(error);

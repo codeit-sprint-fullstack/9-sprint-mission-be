@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
   CONFLICT_USER,
   FAILED_SIGNIN_INPUT,
@@ -67,6 +68,11 @@ export class UserService {
     }
   }
 
+  async updateUser(userId, data) {
+    const updatedUser = await this.userRepository.update(userId, data);
+    return this.filterSensitiveUserData(updatedUser);
+  }
+
   // ------------- Helper 메서드 ------------
   async hashPassword(password) {
     return bcrypt.hash(password, 10);
@@ -82,6 +88,14 @@ export class UserService {
     if (!isMatch) {
       throw new UnAuthorizedException("비밀번호가 틀립니다.");
     }
+  }
+
+  createToken(user, type) {
+    const payload = { userId: user.id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: type === "refresh" ? "2w" : "30m",
+    });
+    return token;
   }
 }
 
