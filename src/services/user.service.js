@@ -38,7 +38,6 @@ export class UserService {
         nickname,
         encryptedPassword,
       });
-      //
       return this.filterSensitiveUserData(createdUser);
     } catch (error) {
       throw new InternalServerException(
@@ -71,6 +70,21 @@ export class UserService {
   async updateUser(userId, data) {
     const updatedUser = await this.userRepository.update(userId, data);
     return this.filterSensitiveUserData(updatedUser);
+  }
+
+  async refreshToken(userId, refreshToken) {
+    const user = await userRepository.findById(userId);
+    if (!user || user.refreshToken !== refreshToken) {
+      throw new UnAuthorizedException();
+    }
+
+    const newAccessToken = this.createToken(user);
+    const newRefreshToken = this.createToken(user, "refresh");
+
+    // sliding session a -> b -> b를 서버에서도 알수있게 업데이트
+    await this.userRepository.update(userId, { refreshToken: newRefreshToken });
+
+    return { newAccessToken, newRefreshToken };
   }
 
   // ------------- Helper 메서드 ------------

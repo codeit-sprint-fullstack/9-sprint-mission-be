@@ -51,4 +51,24 @@ export class UserController {
       next(error);
     }
   };
+
+  refreshToken = async (req, res, next) => {
+    try {
+      const { refreshToken } = req.cookie;
+      const { id: userId } = req.user;
+
+      const { newAccessToken, newRefreshToken } =
+        await this.userService.refreshToken(userId, refreshToken);
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/token/refresh",
+      });
+      return res.json({ accessToken: newAccessToken });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

@@ -6,6 +6,8 @@ import { cors } from "./middlewares/cors.js";
 // import { logger } from "./middlewares/logger.js";
 import { reqTimer } from "./middlewares/reqTimer.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import passport from "./config/passport.js";
+import cookieParser from "cookie-parser";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./swagger-output.json" with { type: "json" };
@@ -20,12 +22,14 @@ const closeServer = async () => {
   // 서버 종료(기존 요청 처리 대기)
   if (server) {
     await new Promise((resolve, reject) => {
-      if (error) {
-        console.error("Error during server close", error);
-        reject(error);
-      }
-      console.log("HTTP server closed");
-      resolve();
+      server.close((error) => {
+        if (error) {
+          console.error("Error during server close", error);
+          reject(error);
+        }
+        console.log("HTTP server closed");
+        resolve();
+      });
     });
   }
 
@@ -47,6 +51,7 @@ async function bootStrap() {
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+    app.use(cookieParser());
     app.use(cors);
 
     if (isDevelopment) {
@@ -59,6 +64,8 @@ async function bootStrap() {
     if (isProduction) {
       app.use(morgan("combined"));
     }
+
+    app.use(passport.initialize());
 
     app.use("/api/v1", router);
 
