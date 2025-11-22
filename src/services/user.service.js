@@ -87,6 +87,24 @@ export class UserService {
     return { newAccessToken, newRefreshToken };
   }
 
+  async oauthCreateOrUpdate(provider, providerId, email, nickname) {
+    const existingUser = await userRepository.findByEmail(email);
+    if (existingUser) {
+      return userRepository.update(existingUser.id, {
+        provider,
+        providerId,
+        nickname,
+      });
+    } else {
+      return userRepository.save({
+        provider,
+        providerId,
+        email,
+        nickname,
+      });
+    }
+  }
+
   // ------------- Helper 메서드 ------------
   async hashPassword(password) {
     return bcrypt.hash(password, 10);

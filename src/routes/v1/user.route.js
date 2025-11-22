@@ -1,6 +1,6 @@
 import express from "express";
 import { userController } from "../../controllers/index.js";
-import { requireRefreshToken } from "../../middlewares/auth.js";
+import auth from "../../middlewares/auth.js";
 
 export const userRouter = express.Router();
 
@@ -10,6 +10,14 @@ userRouter.post("/signIn", userController.signIn);
 
 userRouter.post(
   "/refresh-token",
-  requireRefreshToken,
+  auth.requireRefreshToken,
   userController.refreshToken
 );
+
+userRouter.get(
+  "/google/callback",
+  auth.requireGoogleStrategy,
+  userController.googleCallback
+);
+
+userRouter.get("/google", auth.requireGoogleScope);

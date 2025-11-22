@@ -71,4 +71,15 @@ export class UserController {
       next(error);
     }
   };
+
+  googleCallback = async (req, res, next) => {
+    const accessToken = this.userService.createToken(req.user);
+    const refreshToken = this.userService.createToken(req.user, "refresh");
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+    return res.json({ accessToken });
+  };
 }
