@@ -83,4 +83,8 @@ async function bootStrap() {
 process.on("SIGTERM", closeServer);
 process.on("SIGINT", closeServer);
 
-bootStrap();
+if (process.env.NODE_ENV !== "test") {
+  bootStrap();
+}
+
+export { app };

@@ -15,7 +15,9 @@
     "migrate:dev": "npm run prisma -- migrate dev",
     "migrate:deploy": "npm run prisma -- migrate deploy",
     "migrate:reset": "npm run prisma -- migrate reset",
-    "studio": "npm run prisma -- studio"
+    "studio": "npm run prisma -- studio",
+    "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
+    "test:watch": "dotenv -e ./env/.env.test -- jest --watch"
   },
   "lint-staged": {
     "**/*.(js.jsx.ts.tsx)": [
@@ -52,11 +54,13 @@
     "@swc/core": "^1.13.5",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "cuid": "^3.0.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "express-jwt": "^8.5.1",
     "morgan": "^1.10.1",
     "passport": "^0.7.0",
+    "passport-google": "^0.3.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "swagger-jsdoc": "^6.2.8",
@@ -65,15 +69,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@swc/jest": "^0.2.39",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "jest": "^30.2.0",
     "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "prisma": "^7.0.0"
+    "prisma": "^7.0.0",
+    "supertest": "^7.1.4"
   }
 }
