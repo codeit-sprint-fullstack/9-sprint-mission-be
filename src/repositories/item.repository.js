@@ -26,6 +26,20 @@ export class ItemRepository {
         orderBy: sortOptions,
         skip,
         take,
+        include: {
+          user: {
+            select: {
+              id: true,
+              nickname: true,
+              userProfile: true,
+            },
+          },
+          _count: {
+            select: {
+              itemLikes: true,
+            },
+          },
+        },
       }),
       this.prisma.item.count({ where }),
     ]);
@@ -35,7 +49,34 @@ export class ItemRepository {
   async findById(itemId) {
     return await this.prisma.item.findUnique({
       where: { id: itemId },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            userProfile: true,
+          },
+        },
+        itemComments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                nickname: true,
+                userProfile: {
+                  select: {
+                    photoUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        tags: true,
+        _count: {
+          select: { itemLikes: true },
+        },
+      },
     });
   }
 

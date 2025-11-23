@@ -4,9 +4,9 @@ import { auth } from "../../middlewares/auth.js";
 
 export const authRouter = express.Router();
 
-authRouter.post("/signUp", authController.signUp);
-authRouter.post("/signIn", authController.signIn);
-authRouter.post("/signOut", authController.signOut);
+authRouter.post("/signUp", auth.alreadyAuthenticated, authController.signUp);
+authRouter.post("/signIn", auth.alreadyAuthenticated, authController.signIn);
+authRouter.post("/signOut", auth.verifyAccessToken, authController.signOut);
 
 authRouter.post(
   "/refresh-token",

@@ -7,7 +7,7 @@ model Item {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  ItemComments ItemComment[] 
+  itemComments ItemComment[] 
 
   user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   tags      Tag[]
