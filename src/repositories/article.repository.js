@@ -21,16 +21,40 @@ export class ArticleRepository {
         }
       : {};
 
-    const [article, total] = await Promise.all([
+    const [articles, total] = await Promise.all([
       this.prisma.article.findMany({
         where,
         orderBy: sortOptions,
         skip,
         take,
+        include: {
+          author: {
+            include: {
+              userProfile: true,
+            },
+          },
+        },
       }),
       this.prisma.article.count({ where }),
     ]);
-    return { article, total };
+    return { articles, total };
+  }
+
+  async findBestAll() {
+    const bestArticles = await this.prisma.article.findMany({
+      orderBy: {
+        view: "desc",
+      },
+      take: 3,
+      include: {
+        author: {
+          include: {
+            userProfile: true,
+          },
+        },
+      },
+    });
+    return bestArticles;
   }
 
   async findById(articleId) {

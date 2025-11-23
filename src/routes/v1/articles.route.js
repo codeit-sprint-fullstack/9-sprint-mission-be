@@ -4,6 +4,7 @@ import { articleController } from "../../controllers/index.js";
 export const articleRouter = express.Router();
 
 articleRouter.get("/", articleController.getArticles);
+articleRouter.get("/best", articleController.getBestArticles);
 
 articleRouter.get("/:articleId", articleController.getArticleById);
 

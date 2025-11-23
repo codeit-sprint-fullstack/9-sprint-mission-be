@@ -24,6 +24,14 @@ export class ArticleService {
     };
   }
 
+  async getBestArticles() {
+    const bestArticles = await this.articleRepository.findBestAll();
+    if (!bestArticles) {
+      throw new NotFoundException(NOT_FOUND_ARTICLE);
+    }
+    return bestArticles;
+  }
+
   async getArticleById(articleId) {
     const article = await this.articleRepository.findById(articleId);
 
