@@ -10,6 +10,10 @@ import { AuthController } from "./auth.controller.js";
 import { AuthService } from "../services/auth.service.js";
 import { authRepository } from "../repositories/auth.repository.js";
 
+import { UserController } from "./user.controller.js";
+import { UserService } from "../services/user.service.js";
+import { userRepository } from "../repositories/user.repository.js";
+
 /** @see  https://alexkondov.com/tao-of-node/#consider-di-over-mocking */
 
 const articleService = new ArticleService(articleRepository);
@@ -20,3 +24,6 @@ export const itemController = new ItemController(itemService);
 
 const authService = new AuthService(authRepository);
 export const authController = new AuthController(authService);
+
+const userService = new UserService(userRepository);
+export const userController = new UserController(userService);
