@@ -1,0 +1,68 @@
+import { prisma } from "../db/prisma.js";
+
+export class ItemRepository {
+  constructor(prismaClient) {
+    this.prisma = prismaClient;
+  }
+
+  async findAll({ skip, take, orderBy, keyword }) {
+    const sortOptions = {
+      recent: { createdAt: "desc" },
+      oldest: { createdAt: "asc" },
+    }[orderBy] ?? { createdAt: "desc" };
+
+    const where = keyword
+      ? {
+          OR: [
+            { name: { contains: keyword, mode: "insensitive" } },
+            { description: { contains: keyword, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    const [items, total] = await Promise.all([
+      this.prisma.item.findMany({
+        where,
+        orderBy: sortOptions,
+        skip,
+        take,
+      }),
+      this.prisma.item.count({ where }),
+    ]);
+    return { items, total };
+  }
+
+  async findById(itemId) {
+    return await this.prisma.item.findUnique({
+      where: { id: itemId },
+      include: { user: true },
+    });
+  }
+
+  async create(data) {
+    return await this.prisma.item.create({ data });
+  }
+
+  async update(itemId, data) {
+    return await this.prisma.item.update({
+      where: { id: itemId },
+      data,
+    });
+  }
+
+  async delete(itemId) {
+    return await this.prisma.item.delete({
+      where: { id: itemId },
+    });
+  }
+
+  // 논리적 삭제 예시
+  // async softDelete(itemId) {
+  //   return await this.prisma.item.update({
+  //     where: { id: itemId },
+  //     data: { deleteAt: new Date() },
+  //   });
+  // }
+}
+
+export const itemRepository = new ItemRepository(prisma);

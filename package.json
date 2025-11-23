@@ -3,19 +3,22 @@
   "version": "1.0.1",
   "description": "panda-express-server",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
     "start": "node dist/src/server.js",
     "build": "npx swc src -d dist && node dist/src/swagger.js",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
-    "seed": "node --env-file=./env/.env.development scripts/seed.js",
-    "prisma": "dotenv -e ./env/.env.development -- prisma",
-    "db:push": "npm run prisma -- db push --schema ./prisma/schema",
-    "migrate:dev": "npm run prisma -- migrate dev --schema ./prisma/schema",
-    "migrate:deploy": "npm run prisma -- migrate deploy --schema ./prisma/schema",
-    "migrate:reset": "npm run prisma -- migrate reset --schema ./prisma/schema",
-    "studio": "npm run prisma -- studio --schema ./prisma/schema"
+    "prisma": "node --env-file=./env/.env.development node_modules/prisma/build/index.js",
+    "db:push": "npm run prisma -- db push",
+    "migrate:dev": "npm run prisma -- migrate dev",
+    "migrate:deploy": "npm run prisma -- migrate deploy",
+    "migrate:reset": "npm run prisma -- migrate reset",
+    "generate": "npm run prisma generate",
+    "studio": "npm run prisma -- studio",
+    "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
+    "test:watch": "dotenv -e ./env/.env.test -- jest --watch"
   },
   "lint-staged": {
     "**/*.(js.jsx.ts.tsx)": [
@@ -32,34 +35,53 @@
   ],
   "author": {
     "name": "youngi-kim",
-    "email": "rklpoi5678@naver.com"
+    "email": "rklpoi5678@naver.com",
+    "url": "https://github.com/rklpoi5678"
   },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rklpoi5678/9-sprint-mission-be/issues"
   },
+  "engines": {
+    "node": ">=24.x",
+    "npm": ">=11.x"
+  },
   "homepage": "https://github.com/rklpoi5678/9-sprint-mission-be#readme",
   "dependencies": {
-    "@prisma/client": "^6.16.2",
+    "@faker-js/faker": "^10.0.0",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
     "@swc/cli": "^0.7.8",
     "@swc/core": "^1.13.5",
-    "@faker-js/faker": "^10.0.0",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cuid": "^3.0.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "swagger-autogen": "^2.23.7",
+    "express-jwt": "^8.5.1",
+    "morgan": "^1.10.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.1.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@swc/jest": "^0.2.39",
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.2",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "jest": "^30.2.0",
     "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "prisma": "^6.16.2"
+    "prisma": "^7.0.0",
+    "supertest": "^7.1.4"
   }
 }
