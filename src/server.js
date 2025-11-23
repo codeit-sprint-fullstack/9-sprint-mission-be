@@ -45,31 +45,36 @@ const closeServer = async () => {
   }
 };
 
+const setupApp = () => {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(cookieParser());
+  app.use(cors);
+
+  if (isDevelopment) {
+    app.use(morgan("dev"));
+    // app.use(logger);
+    app.use(reqTimer);
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+  }
+
+  if (isProduction) {
+    app.use(morgan("combined"));
+  }
+
+  app.use(passport.initialize());
+
+  app.use("/uploads", express.static("uploads"));
+  app.use("/api/v1", router);
+
+  app.use(errorHandler);
+};
+
+setupApp();
+
 async function bootStrap() {
   try {
     await connectDB();
-
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.use(cookieParser());
-    app.use(cors);
-
-    if (isDevelopment) {
-      app.use(morgan("dev"));
-      // app.use(logger);
-      app.use(reqTimer);
-      app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-    }
-
-    if (isProduction) {
-      app.use(morgan("combined"));
-    }
-
-    app.use(passport.initialize());
-
-    app.use("/api/v1", router);
-
-    app.use(errorHandler);
 
     server = app.listen(config.PORT, () => {
       console.log("Server running on http://localhost:" + config.PORT);
