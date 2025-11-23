@@ -1,12 +1,15 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { authRepository } from "../../repositories/auth.repository.js";
 
-const accessTokenOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
+const cookieExtractor = (req) => {
+  var token = null;
+  if (req && req.cookies) {
+    token = req.cookies["accessToken"];
+  }
+  return token;
 };
 
-const cookieExtractor = (req) => {
+const refreshCookieExtractor = (req) => {
   var token = null;
   if (req && req.cookies) {
     token = req.cookies["refreshToken"];
@@ -14,8 +17,13 @@ const cookieExtractor = (req) => {
   return token;
 };
 
-const refreshTokenOptions = {
+const accessTokenOptions = {
   jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRET,
+};
+
+const refreshTokenOptions = {
+  jwtFromRequest: refreshCookieExtractor,
   secretOrKey: process.env.JWT_SECRET,
 };
 

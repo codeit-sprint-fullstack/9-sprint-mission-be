@@ -51,13 +51,13 @@ export class AuthService {
       throw new BadRequestException(FAILED_SIGNIN_INPUT);
     }
 
-    try {
-      const user = await this.authRepository.findByEmail(email);
-      // 인증실패
-      if (!user) {
-        throw new UnAuthorizedException("이메일 이나 비밀번호가 틀립니다.");
-      }
+    const user = await this.authRepository.findByEmail(email);
+    // 인증실패
+    if (!user) {
+      throw new UnAuthorizedException("이메일 이나 비밀번호가 틀립니다.");
+    }
 
+    try {
       await this.verifyPassword(password, user.encryptedPassword);
       return this.filterSensitiveUserData(user);
     } catch (error) {
