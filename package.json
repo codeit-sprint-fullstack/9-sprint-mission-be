@@ -15,6 +15,7 @@
     "migrate:dev": "npm run prisma -- migrate dev",
     "migrate:deploy": "npm run prisma -- migrate deploy",
     "migrate:reset": "npm run prisma -- migrate reset",
+    "generate": "npm run prisma generate",
     "studio": "npm run prisma -- studio",
     "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
     "test:watch": "dotenv -e ./env/.env.test -- jest --watch"
