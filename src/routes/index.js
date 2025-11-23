@@ -3,6 +3,7 @@ import { itemRouter } from "./v1/items.route.js";
 import { articleRouter } from "./v1/articles.route.js";
 import { authRouter } from "./v1/auth.route.js";
 import { userRouter } from "./v1/users.route.js";
+import { imageRouter } from "./v1/images.route.js";
 
 export const router = express.Router();
 
@@ -17,3 +18,5 @@ router.use("/auth", authRouter);
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
 router.use("/articles", articleRouter);
+
+router.use("/images", imageRouter);

@@ -50,13 +50,14 @@ export class ItemController {
 
   createItem = async (req, res, next) => {
     try {
-      const { name, description, price, tags } = req.body;
+      const { name, description, price, tags, images } = req.body;
 
       const newItem = await this.itemService.createItem({
         name,
         description,
         price,
         tags,
+        images,
       });
       res.status(HttpStatus.CREATED).json({
         success: true,
