@@ -14,7 +14,7 @@ const requireGoogleScope = passport.authenticate("google", {
   scope: ["profile", "email"],
 });
 
-export default auth = {
+export const auth = {
   verifyAccessToken,
   requireRefreshToken,
   requireGoogleStrategy,
