@@ -11,11 +11,11 @@ import {
   UnAuthorizedException,
   InternalServerException,
 } from "../common/exceptions/index.js";
-import { userRepository } from "../repositories/user.repository.js";
+import { authRepository } from "../repositories/auth.repository.js";
 
-export class UserService {
-  constructor(userRepository) {
-    this.userRepository = userRepository;
+export class AuthService {
+  constructor(authRepository) {
+    this.authRepository = authRepository;
   }
 
   async createUser({ email, nickname, password }) {
@@ -25,7 +25,7 @@ export class UserService {
 
     try {
       // 중복된 유저
-      const existedUser = await this.userRepository.findByEmail(email);
+      const existedUser = await this.authRepository.findByEmail(email);
 
       if (existedUser) {
         throw new ConflictException(CONFLICT_USER);
@@ -33,7 +33,7 @@ export class UserService {
 
       const encryptedPassword = await this.hashPassword(password, 10);
 
-      const createdUser = await this.userRepository.save({
+      const createdUser = await this.authRepository.save({
         email,
         nickname,
         encryptedPassword,
@@ -52,7 +52,7 @@ export class UserService {
     }
 
     try {
-      const user = await this.userRepository.findByEmail(email);
+      const user = await this.authRepository.findByEmail(email);
       // 인증실패
       if (!user) {
         throw new UnAuthorizedException("이메일 이나 비밀번호가 틀립니다.");
@@ -68,12 +68,12 @@ export class UserService {
   }
 
   async updateUser(userId, data) {
-    const updatedUser = await this.userRepository.update(userId, data);
+    const updatedUser = await this.authRepository.update(userId, data);
     return this.filterSensitiveUserData(updatedUser);
   }
 
   async refreshToken(userId, refreshToken) {
-    const user = await userRepository.findById(userId);
+    const user = await authRepository.findById(userId);
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnAuthorizedException();
     }
@@ -82,21 +82,21 @@ export class UserService {
     const newRefreshToken = this.createToken(user, "refresh");
 
     // sliding session a -> b -> b를 서버에서도 알수있게 업데이트
-    await this.userRepository.update(userId, { refreshToken: newRefreshToken });
+    await this.authRepository.update(userId, { refreshToken: newRefreshToken });
 
     return { newAccessToken, newRefreshToken };
   }
 
   async oauthCreateOrUpdate(provider, providerId, email, nickname) {
-    const existingUser = await userRepository.findByEmail(email);
+    const existingUser = await authRepository.findByEmail(email);
     if (existingUser) {
-      return userRepository.update(existingUser.id, {
+      return authRepository.update(existingUser.id, {
         provider,
         providerId,
         nickname,
       });
     } else {
-      return userRepository.save({
+      return authRepository.save({
         provider,
         providerId,
         email,
@@ -131,4 +131,4 @@ export class UserService {
   }
 }
 
-export const userService = new UserService(userRepository);
+export const authService = new AuthService(authRepository);

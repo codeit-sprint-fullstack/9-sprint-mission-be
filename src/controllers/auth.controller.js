@@ -1,15 +1,15 @@
 import { HttpStatus } from "../common/constants/index.js";
 
-export class UserController {
-  constructor(userService) {
-    this.userService = userService;
+export class AuthController {
+  constructor(authService) {
+    this.authService = authService;
   }
 
   signUp = async (req, res, next) => {
     try {
       const { email, nickname, password } = req.body;
 
-      const user = await this.userService.createUser({
+      const user = await this.authService.createUser({
         email,
         nickname,
         password,
@@ -28,14 +28,14 @@ export class UserController {
   signIn = async (req, res, next) => {
     try {
       const { email, password } = req.body;
-      const user = await this.userService.getUser({
+      const user = await this.authService.getUser({
         email,
         password,
       });
 
-      const accessToken = this.userService.createToken(user);
-      const refreshToken = this.userService.createToken(user, "refresh");
-      await this.userService.updateUser(user.id, { refreshToken });
+      const accessToken = this.authService.createToken(user);
+      const refreshToken = this.authService.createToken(user, "refresh");
+      await this.authService.updateUser(user.id, { refreshToken });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         sameSite: "none",
@@ -58,7 +58,7 @@ export class UserController {
       const { id: userId } = req.user;
 
       const { newAccessToken, newRefreshToken } =
-        await this.userService.refreshToken(userId, refreshToken);
+        await this.authService.refreshToken(userId, refreshToken);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
@@ -72,9 +72,13 @@ export class UserController {
     }
   };
 
+  getMe = async (req, res, next) => {
+    const { accessToken } = req.cookie;
+  };
+
   googleCallback = async (req, res, next) => {
-    const accessToken = this.userService.createToken(req.user);
-    const refreshToken = this.userService.createToken(req.user, "refresh");
+    const accessToken = this.authService.createToken(req.user);
+    const refreshToken = this.authService.createToken(req.user, "refresh");
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "none",

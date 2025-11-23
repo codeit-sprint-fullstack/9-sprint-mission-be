@@ -1,6 +1,6 @@
 import GoogleStrategy from "passport-google-oauth20";
 
-import { userService } from "../../services/user.service.js";
+import { authService } from "../../services/auth.service.js";
 
 const googleStrategyOptions = {
   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -9,7 +9,7 @@ const googleStrategyOptions = {
 };
 
 async function verify(accessToken, refreshToken, profile, done) {
-  const user = await userService.oauthCreateOrUpdate(
+  const user = await authService.oauthCreateOrUpdate(
     profile.provider,
     profile.id,
     profile.emails[0].value,

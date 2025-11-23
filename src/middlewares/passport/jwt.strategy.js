@@ -1,5 +1,5 @@
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import { userRepository } from "../../repositories/user.repository.js";
+import { authRepository } from "../../repositories/auth.repository.js";
 
 const accessTokenOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -21,7 +21,7 @@ const refreshTokenOptions = {
 
 async function jwtVerify(payload, done) {
   try {
-    const user = await userRepository.findById(payload.userId);
+    const user = await authRepository.findById(payload.userId);
     if (!user) {
       return done(null, false);
     }

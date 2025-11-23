@@ -1,6 +1,6 @@
 import { prisma } from "../db/prisma.js";
 
-export class UserRepository {
+export class AuthRepository {
   constructor(prismaClient) {
     this.prisma = prismaClient;
   }
@@ -43,4 +43,4 @@ export class UserRepository {
   // }
 }
 
-export const userRepository = new UserRepository(prisma);
+export const authRepository = new AuthRepository(prisma);
