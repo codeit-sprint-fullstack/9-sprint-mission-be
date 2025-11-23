@@ -6,6 +6,12 @@ import { ALREADY_AUTHENTICATED } from "../common/constants/errorMessage.js";
 const verifyAccessToken = expressjwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["HS256"],
+  getToken: (req) => {
+    if (req.cookies && req.cookies.accessToken) {
+      return req.cookies.accessToken;
+    }
+    return null;
+  },
 });
 const requireRefreshToken = passport.authenticate("refresh-token", {
   session: false,

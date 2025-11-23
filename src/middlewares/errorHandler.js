@@ -4,7 +4,7 @@ import { HttpException } from "../common/exceptions/index.js";
 export const errorHandler = (error, req, res, next) => {
   console.error("error", error);
 
-  if (error.name === "Unauthorized") {
+  if (error.name === "UnauthorizedError") {
     return res.status(401).json({
       success: false,
       message: error.message || "인증되지 않은 사용자입니다",
