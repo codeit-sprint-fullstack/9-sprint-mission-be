@@ -52,12 +52,15 @@ export class ItemController {
     try {
       const { name, description, price, tags, images } = req.body;
 
+      const { userId } = req.auth;
+
       const newItem = await this.itemService.createItem({
         name,
         description,
         price,
         tags,
         images,
+        userId,
       });
       res.status(HttpStatus.CREATED).json({
         success: true,

@@ -1,6 +1,8 @@
 import { NotFoundException } from "../common/exceptions/index.js";
 import { NOT_FOUND_ITEM } from "../common/constants/index.js";
 import { itemRepository } from "../repositories/item.repository.js";
+import fs from "fs/promises";
+import path from "path";
 
 // "di"
 export class ItemService {
@@ -33,8 +35,22 @@ export class ItemService {
     return item;
   }
 
-  async createItem(data) {
-    return await this.itemRepository.create(data);
+  async createItem({ name, description, price, tags, images, userId }) {
+    try {
+      const newItem = await this.itemRepository.create({
+        name,
+        description,
+        price,
+        tags,
+        images,
+        userId,
+      });
+      return newItem;
+    } catch (error) {
+      if (images && images.length > 0) {
+        return this.rollbackUploadFiles(images);
+      }
+    }
   }
 
   async updateItem(itemId, data) {
@@ -58,6 +74,25 @@ export class ItemService {
       }
       throw error;
     }
+  }
+
+  // ---- helper ----
+  async rollbackUploadFiles(imageUrl) {
+    const deleteUrl = imageUrl.map(async (url) => {
+      const fileName = url.replace("/uploads/", "");
+      const filePath = path.join(process.cwd(), "uploads", fileName);
+
+      try {
+        await fs.unlink(filePath);
+        console.log(`롤백 - 파일을 삭제:${filePath}`);
+      } catch (unlinkError) {
+        console.error(
+          `롤백에러 - 파일 삭제를 실패함: ${filePath}`,
+          unlinkError
+        );
+      }
+    });
+    await Promise.all(deleteUrl);
   }
 }
 

@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { BadRequestException } from "../common/exceptions/index.js";
+import { v4 as uuidv4 } from "uuid";
 
 const uploadDir = "uploads";
 if (!fs.existsSync(uploadDir)) {
@@ -10,16 +11,19 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// local -> @TODO S3
+// @TODO local -> S3
+// //프로덕션일경우 로컬일경만함시도해볼만함
+// const storage = isProduction ? multerS3(S3) : multer.diskStorage(기존로컬)
 const storage = multer.diskStorage({
   // 저장위치
+  filename: (req, file, done) => {
+    const randomId = uuidv4();
+    const ext = path.extname(file.originalname);
+    const filename = randomId + ext;
+    done(null, filename);
+  },
   destination: (req, file, done) => {
     done(null, uploadDir);
-  },
-  filename: (req, file, done) => {
-    // 확장자 ext
-    const ext = path.extname(file.originalname);
-    done(null, path.basename(file.originalname, ext) + Date.now() + ext);
   },
 });
 

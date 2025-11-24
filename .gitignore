@@ -24,3 +24,6 @@ Thumbs.db
 # prisma
 prisma/migrations
 src/generated
+
+# images
+/uploads

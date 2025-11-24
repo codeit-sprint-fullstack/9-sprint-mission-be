@@ -24,7 +24,7 @@ export const validateBody = (schema) => (req, res, next) => {
     req.body = schema.parse(req.body);
     next();
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof z.ZodError && Array.isArray(error.errors)) {
       res.status(HttpStatus.BAD_REQUEST).json({
         success: false,
         message: "유효성 검사 실패",

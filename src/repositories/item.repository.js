@@ -80,8 +80,31 @@ export class ItemRepository {
     });
   }
 
-  async create(data) {
-    return await this.prisma.item.create({ data });
+  async create({ name, description, price, tags, images, userId }) {
+    const tagsConnectOrCreate = tags.map((tagName) => ({
+      where: { name: tagName },
+      create: { name: tagName },
+    }));
+
+    return await this.prisma.$transaction(async (tx) => {
+      const newItem = await prisma.item.create({
+        data: {
+          name,
+          description,
+          price,
+          images,
+          authorId: userId,
+          tags: {
+            connectOrCreate: tagsConnectOrCreate,
+          },
+        },
+        include: {
+          user: true,
+          tags: true,
+        },
+      });
+      return newItem;
+    });
   }
 
   async update(itemId, data) {
