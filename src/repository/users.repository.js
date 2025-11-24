@@ -1,4 +1,4 @@
-import prisma from '../config/prisma.js';
+import { prisma } from '../db/prisma.js';
 
 async function findUserById(id) {
   return prisma.user.findUnique({
@@ -20,7 +20,7 @@ async function createUser(user) {
   return prisma.user.create({
     data: {
       email: user.email,
-      name: user.name,
+      nickname: user.nickname,
       password: user.password,
     },
   });
@@ -35,11 +35,19 @@ async function updateUserById(id, data) {
   });
 }
 
-async function upsertUser(provider, providerId, email, name) {
+async function deleteUserById(id) {
+  return prisma.user.delete({
+    where: {
+      id,
+    },
+  });
+}
+
+async function upsertUser(provider, providerId, email, nickname) {
   return prisma.user.upsert({
     where: { provider, providerId },
-    update: { email, name },
-    create: { provider, providerId, email, name },
+    update: { email, nickname },
+    create: { provider, providerId, email, nickname },
   });
 }
 
@@ -49,4 +57,5 @@ export default {
   createUser,
   updateUserById,
   upsertUser,
+  deleteUserById,
 };

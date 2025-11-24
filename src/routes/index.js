@@ -1,7 +1,8 @@
 import express from 'express';
 import { productsRouter } from './products.js';
-import { articlesRouter } from './article.js';
-import { commentsRouter } from './comment.js';
+import { articlesRouter } from './articles.js';
+import { commentsRouter } from './comments.js';
+import { authRouter } from './auth.js';
 
 export const router = express.Router();
 
@@ -17,3 +18,4 @@ router.get('/', (req, res) => {
 router.use('/products', productsRouter);
 router.use('/articles', articlesRouter);
 router.use('/comments', commentsRouter);
+router.use('/auth', authRouter);
