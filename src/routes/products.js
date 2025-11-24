@@ -4,6 +4,7 @@ import { validateProducts } from '../validators/validateProducts.js';
 import { NotFoundException } from '../err/notFoundException.js';
 import { commentsRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { parsePagination } from '../middlewares/pagination.middleware.js';
 
 export const productsRouter = express.Router();
@@ -67,44 +68,56 @@ productsRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-productsRouter.post('/', validateProducts, async (req, res, next) => {
-  try {
-    const { name, description, price, tags } = req.body;
-    const newProduct = await Product.createProduct({
-      name,
-      description,
-      price,
-      tags,
-    });
-    res.status(201).json({
-      success: true,
-      message: '상품이 정상적으로 추가되었습니다',
-      ...newProduct,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
-productsRouter.patch('/:id', validateProducts, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const productExistence = await Product.findProductById(id);
-    if (!productExistence) {
-      throw new NotFoundException('상품을 찾을 수가 없습니다.');
+productsRouter.post(
+  '/',
+  authMiddleware,
+  validateProducts,
+  async (req, res, next) => {
+    try {
+      const { name, description, price, tags } = req.body;
+      const { id: authorId } = req.user;
+      const newProduct = await Product.createProduct({
+        name,
+        description,
+        price,
+        tags,
+        authorId,
+      });
+      res.status(201).json({
+        success: true,
+        message: '상품이 정상적으로 추가되었습니다',
+        ...newProduct,
+      });
+    } catch (err) {
+      next(err);
     }
-    const updatedProduct = await Product.updateProduct(id, req.body);
-    res.json({
-      success: true,
-      message: '등록된 상품 내용이 수정되었습니다',
-      ...updatedProduct,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
-productsRouter.delete('/:id', async (req, res, next) => {
+productsRouter.patch(
+  '/:id',
+  authMiddleware,
+  validateProducts,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const productExistence = await Product.findProductById(id);
+      if (!productExistence) {
+        throw new NotFoundException('상품을 찾을 수가 없습니다.');
+      }
+      const updatedProduct = await Product.updateProduct(id, req.body);
+      res.json({
+        success: true,
+        message: '등록된 상품 내용이 수정되었습니다',
+        ...updatedProduct,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+productsRouter.delete('/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const productExistence = await Product.findProductById(id);
@@ -115,7 +128,7 @@ productsRouter.delete('/:id', async (req, res, next) => {
     res.json({
       success: true,
       message: '상품이 삭제되었습니다',
-      ...deletedProduct,
+      id: deletedProduct.id,
     });
   } catch (err) {
     next(err);
