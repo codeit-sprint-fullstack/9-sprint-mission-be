@@ -4,6 +4,7 @@ import { validateArticles } from '../validators/validateArticles.js';
 import { NotFoundException } from '../err/notFoundException.js';
 import { commentsRepository as Comment } from '../repository/comments.repository.js';
 import { validateComments } from '../validators/validateComments.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { parsePagination } from '../middlewares/pagination.middleware.js';
 
 export const articlesRouter = express.Router();
@@ -67,42 +68,54 @@ articlesRouter.get('/:id', async (req, res, next) => {
   }
 });
 
-articlesRouter.post('/', validateArticles, async (req, res, next) => {
-  try {
-    const { title, content } = req.body;
-    const newArticle = await Article.createArticle({
-      title,
-      content,
-    });
-    res.status(201).json({
-      success: true,
-      message: '글이 정상적으로 추가되었습니다',
-      ...newArticle,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
-articlesRouter.patch('/:id', validateArticles, async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const articleExistence = await Article.findArticleById(id);
-    if (!articleExistence) {
-      throw new NotFoundException('글을 찾을 수가 없습니다.');
+articlesRouter.post(
+  '/',
+  authMiddleware,
+  validateArticles,
+  async (req, res, next) => {
+    try {
+      const { title, content } = req.body;
+      const { id: authorId } = req.user;
+      const newArticle = await Article.createArticle({
+        title,
+        content,
+        authorId,
+      });
+      res.status(201).json({
+        success: true,
+        message: '글이 정상적으로 추가되었습니다',
+        ...newArticle,
+      });
+    } catch (err) {
+      next(err);
     }
-    const updatedArticle = await Article.updateArticle(id, req.body);
-    res.json({
-      success: true,
-      message: '등록된 글 내용이 수정되었습니다',
-      ...updatedArticle,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
-articlesRouter.delete('/:id', async (req, res, next) => {
+articlesRouter.patch(
+  '/:id',
+  authMiddleware,
+  validateArticles,
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const articleExistence = await Article.findArticleById(id);
+      if (!articleExistence) {
+        throw new NotFoundException('글을 찾을 수가 없습니다.');
+      }
+      const updatedArticle = await Article.updateArticle(id, req.body);
+      res.json({
+        success: true,
+        message: '등록된 글 내용이 수정되었습니다',
+        ...updatedArticle,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+articlesRouter.delete('/:id', authMiddleware, async (req, res, next) => {
   try {
     const { id } = req.params;
     const articleExistence = await Article.findArticleById(id);
