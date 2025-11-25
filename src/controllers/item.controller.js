@@ -50,8 +50,9 @@ export class ItemController {
 
   createItem = async (req, res, next) => {
     try {
-      const { name, description, price, tags, images } = req.body;
+      const { name, description, price, tags } = req.body;
 
+      const images = req.files;
       const { userId } = req.auth;
 
       const newItem = await this.itemService.createItem({
@@ -92,10 +93,10 @@ export class ItemController {
   };
 
   deleteItem = async (req, res, next) => {
+    const { itemId } = req.params;
+    const { userId } = req.auth;
     try {
-      const { itemId } = req.params;
-
-      await this.itemService.deleteItem(itemId);
+      await this.itemService.deleteItem(itemId, userId);
 
       res.status(HttpStatus.OK).json({
         success: true,

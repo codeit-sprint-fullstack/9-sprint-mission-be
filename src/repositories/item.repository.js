@@ -86,32 +86,45 @@ export class ItemRepository {
       create: { name: tagName },
     }));
 
-    return await this.prisma.$transaction(async (tx) => {
-      const newItem = await prisma.item.create({
-        data: {
-          name,
-          description,
-          price,
-          images,
-          authorId: userId,
-          tags: {
-            connectOrCreate: tagsConnectOrCreate,
-          },
+    const newItem = await this.prisma.item.create({
+      data: {
+        name,
+        description,
+        price,
+        images,
+        authorId: userId,
+        tags: {
+          connectOrCreate: tagsConnectOrCreate,
         },
-        include: {
-          user: true,
-          tags: true,
-        },
-      });
-      return newItem;
+      },
+      include: {
+        tags: true,
+      },
     });
+    return newItem;
   }
 
   async update(itemId, data) {
-    return await this.prisma.item.update({
+    const { tags: tagNames, ...itemData } = data;
+
+    const tagsConnectOrCreate = tagNames.map((tagName) => ({
+      where: { name: tagName },
+      create: { name: tagName },
+    }));
+
+    const updatedItem = await prisma.item.update({
       where: { id: itemId },
-      data,
+      data: {
+        ...itemData,
+        tags: {
+          connectOrCreate: tagsConnectOrCreate,
+        },
+      },
+      include: {
+        tags: true,
+      },
     });
+    return updatedItem;
   }
 
   async delete(itemId) {

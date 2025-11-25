@@ -1,4 +1,7 @@
-import { NotFoundException } from "../common/exceptions/index.js";
+import {
+  NotFoundException,
+  UnAuthorizedException,
+} from "../common/exceptions/index.js";
 import { NOT_FOUND_ITEM } from "../common/constants/index.js";
 import { itemRepository } from "../repositories/item.repository.js";
 import fs from "fs/promises";
@@ -36,13 +39,15 @@ export class ItemService {
   }
 
   async createItem({ name, description, price, tags, images, userId }) {
+    const imageUrls = images.map((file) => file.path);
+
     try {
       const newItem = await this.itemRepository.create({
         name,
         description,
         price,
         tags,
-        images,
+        images: imageUrls,
         userId,
       });
       return newItem;
@@ -55,7 +60,8 @@ export class ItemService {
 
   async updateItem(itemId, data) {
     try {
-      return await this.itemRepository.update(itemId, data);
+      const updatedItem = await this.itemRepository.update(itemId, data);
+      return updatedItem;
     } catch (error) {
       if (error.code === "P2025") {
         throw new NotFoundException(NOT_FOUND_ITEM);
@@ -64,10 +70,18 @@ export class ItemService {
     }
   }
 
-  async deleteItem(itemId) {
+  async deleteItem(itemId, currentUserId) {
+    const item = await this.itemRepository.findById(itemId);
+    if (!item) {
+      return new NotFoundException(NOT_FOUND_ITEM);
+    }
+
+    if (item.authorId !== currentUserId) {
+      throw new UnAuthorizedException();
+    }
+
     try {
-      const deletedItem = await this.itemRepository.delete(itemId);
-      return deletedItem;
+      await this.itemRepository.delete(itemId);
     } catch (error) {
       if (error.code === "P2025") {
         throw new NotFoundException(NOT_FOUND_ITEM);
