@@ -6,9 +6,18 @@ import { config, isDevelopment } from './config/config.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { disconnectDB } from './db/prisma.js';
 import { cors } from './middlewares/cors.js';
+import fs from 'fs';
+import path from 'path';
 import cookieParser from 'cookie-parser';
 
 const app = express();
+
+// 'uploads' 디렉토리가 없으면 생성
+const uploadsDir = path.join(path.resolve(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log(`Created directory: ${uploadsDir}`);
+}
 
 app.use(express.json());
 app.use(cookieParser());
@@ -24,6 +33,8 @@ if (isDevelopment) {
 app.use('/', router);
 
 app.use(errorHandler);
+
+app.use('/uploads', express.static('uploads'));
 
 const server = app.listen(config.PORT, () => {
   console.log(`🚀 Server running on http://localhost:${config.PORT}`);

@@ -3,6 +3,7 @@ import { productsRouter } from './products.js';
 import { articlesRouter } from './articles.js';
 import { commentsRouter } from './comments.js';
 import { authRouter } from './auth.js';
+import { uploadsRouter } from './uploads.js';
 
 export const router = express.Router();
 
@@ -19,3 +20,4 @@ router.use('/products', productsRouter);
 router.use('/articles', articlesRouter);
 router.use('/comments', commentsRouter);
 router.use('/auth', authRouter);
+router.use('/uploads', uploadsRouter);
