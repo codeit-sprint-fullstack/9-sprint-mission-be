@@ -169,6 +169,7 @@ articlesRouter.get(
 
 articlesRouter.post(
   '/:articleId/comments',
+  authMiddleware,
   validateComments,
   async (req, res, next) => {
     try {

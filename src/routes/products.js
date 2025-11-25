@@ -170,6 +170,7 @@ productsRouter.get(
 
 productsRouter.post(
   '/:productId/comments',
+  authMiddleware,
   validateComments,
   async (req, res, next) => {
     try {
