@@ -18,3 +18,4 @@ export const NOT_FOUND_USER = "유저 정보를 찾을수 없습니다.";
 
 export const REQUIRED_AUTHENTICATED = "인증이 필요합니다.";
 export const INVALID_OR_EXPIRED_TOKEN = "유효하지 않거나 만료된 토큰";
+export const ALREADY_AUTHENTICATED = "이미 로그인된 사용자입니다.";

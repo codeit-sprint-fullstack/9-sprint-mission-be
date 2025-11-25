@@ -1,5 +1,6 @@
 import express from "express";
 import { articleController } from "../../controllers/index.js";
+import { auth } from "../../middlewares/auth.js";
 
 export const articleRouter = express.Router();
 
@@ -8,8 +9,20 @@ articleRouter.get("/best", articleController.getBestArticles);
 
 articleRouter.get("/:articleId", articleController.getArticleById);
 
-articleRouter.post("/", articleController.createArticle);
+articleRouter.post(
+  "/",
+  auth.verifyAccessToken,
+  articleController.createArticle
+);
 
-articleRouter.patch("/:articleId", articleController.updateArticle);
+articleRouter.patch(
+  "/:articleId",
+  auth.verifyAccessToken,
+  articleController.updateArticle
+);
 
-articleRouter.delete("/:articleId", articleController.deleteArticle);
+articleRouter.delete(
+  "/:articleId",
+  auth.verifyAccessToken,
+  articleController.deleteArticle
+);

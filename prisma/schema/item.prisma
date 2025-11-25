@@ -4,10 +4,11 @@ model Item {
   name        String
   description String
   price       String
+  images      String[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  ItemComments ItemComment[] 
+  itemComments ItemComment[] 
 
   user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   tags      Tag[]
@@ -39,6 +40,6 @@ model ItemLike {
 
 model Tag {
   id    String @id @default(cuid())
-  name  String 
+  name  String @unique 
   items Item[]
 }

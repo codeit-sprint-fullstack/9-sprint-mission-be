@@ -26,6 +26,20 @@ export class ItemRepository {
         orderBy: sortOptions,
         skip,
         take,
+        include: {
+          user: {
+            select: {
+              id: true,
+              nickname: true,
+              userProfile: true,
+            },
+          },
+          _count: {
+            select: {
+              itemLikes: true,
+            },
+          },
+        },
       }),
       this.prisma.item.count({ where }),
     ]);
@@ -35,19 +49,82 @@ export class ItemRepository {
   async findById(itemId) {
     return await this.prisma.item.findUnique({
       where: { id: itemId },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            userProfile: true,
+          },
+        },
+        itemComments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                nickname: true,
+                userProfile: {
+                  select: {
+                    photoUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        tags: true,
+        _count: {
+          select: { itemLikes: true },
+        },
+      },
     });
   }
 
-  async create(data) {
-    return await this.prisma.item.create({ data });
+  async create({ name, description, price, tags, images, userId }) {
+    const tagsConnectOrCreate = tags.map((tagName) => ({
+      where: { name: tagName },
+      create: { name: tagName },
+    }));
+
+    const newItem = await this.prisma.item.create({
+      data: {
+        name,
+        description,
+        price,
+        images,
+        authorId: userId,
+        tags: {
+          connectOrCreate: tagsConnectOrCreate,
+        },
+      },
+      include: {
+        tags: true,
+      },
+    });
+    return newItem;
   }
 
   async update(itemId, data) {
-    return await this.prisma.item.update({
+    const { tags: tagNames, ...itemData } = data;
+
+    const tagsConnectOrCreate = tagNames.map((tagName) => ({
+      where: { name: tagName },
+      create: { name: tagName },
+    }));
+
+    const updatedItem = await prisma.item.update({
       where: { id: itemId },
-      data,
+      data: {
+        ...itemData,
+        tags: {
+          connectOrCreate: tagsConnectOrCreate,
+        },
+      },
+      include: {
+        tags: true,
+      },
     });
+    return updatedItem;
   }
 
   async delete(itemId) {
