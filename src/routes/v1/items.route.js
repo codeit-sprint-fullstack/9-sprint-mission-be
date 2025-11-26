@@ -43,3 +43,16 @@ itemRouter.delete(
   auth.verifyAccessToken,
   itemController.deleteItem
 );
+
+//likes
+itemRouter.get(
+  "/:itemId/likes",
+  auth.verifyAccessToken,
+  itemController.getLikesStatus
+);
+
+itemRouter.post(
+  "/:itemId/likes",
+  auth.verifyAccessToken,
+  itemController.toggleItemLike
+);

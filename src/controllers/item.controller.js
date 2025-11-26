@@ -107,4 +107,40 @@ export class ItemController {
       return;
     }
   };
+
+  getLikesStatus = async (req, res, next) => {
+    const { itemId } = req.params;
+    const { userId } = req.auth;
+
+    try {
+      const isLiked = await this.itemService.getItemLikeStatus(itemId, userId);
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "좋아요 상태 조회 완료",
+        data: isLiked,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  toggleItemLike = async (req, res, next) => {
+    const { itemId } = req.params;
+    const { userId } = req.auth;
+
+    try {
+      const { isLiked, message } = await this.itemService.getItemLikeStatus(
+        itemId,
+        userId
+      );
+
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        message: message,
+        data: isLiked,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

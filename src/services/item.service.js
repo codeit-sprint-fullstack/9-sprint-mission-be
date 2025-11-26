@@ -2,7 +2,7 @@ import {
   NotFoundException,
   UnAuthorizedException,
 } from "../common/exceptions/index.js";
-import { NOT_FOUND_ITEM } from "../common/constants/index.js";
+import { NOT_FOUND_ITEM, NOT_FOUND_USER } from "../common/constants/index.js";
 import { itemRepository } from "../repositories/item.repository.js";
 import fs from "fs/promises";
 import path from "path";
@@ -88,6 +88,35 @@ export class ItemService {
       }
       throw error;
     }
+  }
+
+  async getItemLikeStatus(itemId, userId) {
+    if (!itemId) {
+      throw new NotFoundException(NOT_FOUND_ITEM);
+    }
+
+    if (!userId) {
+      throw new UnAuthorizedException(NOT_FOUND_USER);
+    }
+
+    const isLiked = await this.itemRepository.getLikesStatus(itemId, userId);
+    return isLiked;
+  }
+
+  async toggleItemLike(itemId, userId) {
+    if (!itemId) {
+      throw new NotFoundException(NOT_FOUND_ITEM);
+    }
+
+    console.log(itemId, userId);
+    if (!userId) {
+      throw new UnAuthorizedException(NOT_FOUND_USER);
+    }
+    const isLiked = await this.itemRepository.toggleLike(itemId, userId);
+    const message = isLiked ? "좋아요 설정 성공" : "좋아요 취소 성공";
+    console.log(isLiked, message);
+
+    return { isLiked, message };
   }
 
   // ---- helper ----

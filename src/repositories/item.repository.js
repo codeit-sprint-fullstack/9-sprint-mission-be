@@ -118,6 +118,47 @@ export class ItemRepository {
     });
   }
 
+  // 특정 아이템에 대한 사용자의 좋아요 상태 조회
+  async getLikesStatus(itemId, userId) {
+    const existingLike = await this.prisma.itemLike.findUnique({
+      where: {
+        itemId_userId: { itemId, userId },
+      },
+      select: { id: true },
+    });
+
+    // 존재시 true (좋아요 상태)
+    return !!existingLike;
+  }
+
+  // 좋아요 토클
+  async toggleLike(itemId, userId) {
+    const result = await this.prisma.$transaction(async (tx) => {
+      const existingLike = await tx.itemLike.findUnique({
+        where: {
+          itemId_userId: {
+            itemId,
+            userId,
+          },
+        },
+      });
+
+      if (existingLike) {
+        await tx.itemLike.delete({ where: { id: existingLike.id } });
+        return false;
+      }
+
+      await tx.itemLike.create({
+        data: {
+          itemId,
+          userId,
+        },
+      });
+      return true;
+    });
+    return result;
+  }
+
   // 논리적 삭제 예시
   // async softDelete(itemId) {
   //   return await this.prisma.item.update({
