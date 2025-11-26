@@ -74,13 +74,14 @@ productsRouter.post(
   validateProducts,
   async (req, res, next) => {
     try {
-      const { name, description, price, tags } = req.body;
+      const { name, description, price, tags, images } = req.body;
       const { id: authorId } = req.user;
       const newProduct = await Product.createProduct({
         name,
         description,
         price,
         tags,
+        images,
         authorId,
       });
       res.status(201).json({

@@ -1,7 +1,7 @@
 import { BadRequestException } from '../err/badRequestException.js';
 
 export const validateProducts = (req, res, next) => {
-  const { name, description, price, tags } = req.body;
+  const { name, description, price, tags, image } = req.body;
 
   if (!name || name.trim().length > 10) {
     throw new BadRequestException(
@@ -25,6 +25,10 @@ export const validateProducts = (req, res, next) => {
 
   if (!tags || !tags.length) {
     throw new BadRequestException('태그는 존재해야 합니다.');
+  }
+
+  if (!image || !tags.length) {
+    throw new BadRequestException('상품 이미지는 존재해야 합니다.');
   }
 
   next();
