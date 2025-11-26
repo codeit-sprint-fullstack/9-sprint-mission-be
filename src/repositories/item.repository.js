@@ -57,21 +57,6 @@ export class ItemRepository {
             userProfile: true,
           },
         },
-        itemComments: {
-          include: {
-            author: {
-              select: {
-                id: true,
-                nickname: true,
-                userProfile: {
-                  select: {
-                    photoUrl: true,
-                  },
-                },
-              },
-            },
-          },
-        },
         tags: true,
         _count: {
           select: { itemLikes: true },

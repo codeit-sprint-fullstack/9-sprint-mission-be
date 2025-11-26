@@ -19,6 +19,7 @@ model ItemComment {
   id        String   @id @default(cuid())
   userId    String
   itemId    String
+  context   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
