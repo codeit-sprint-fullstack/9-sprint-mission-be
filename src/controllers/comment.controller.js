@@ -70,7 +70,7 @@ export class CommentController {
         context,
       });
 
-      res.status(HttpStatus.CREATED).json({
+      res.status(HttpStatus.OK).json({
         success: true,
         message: "댓글 업데이트에 성공했습니다.",
         data: updatedComment,

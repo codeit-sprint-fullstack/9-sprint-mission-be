@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   NotFoundException,
   UnAuthorizedException,
 } from "../common/exceptions/index.js";
@@ -77,7 +78,7 @@ export class ItemService {
     }
 
     if (item.authorId !== currentUserId) {
-      throw new UnAuthorizedException();
+      throw new ForbiddenException("삭제 권한이 없습니다.");
     }
 
     try {
@@ -108,7 +109,6 @@ export class ItemService {
       throw new NotFoundException(NOT_FOUND_ITEM);
     }
 
-    console.log(itemId, userId);
     if (!userId) {
       throw new UnAuthorizedException(NOT_FOUND_USER);
     }
