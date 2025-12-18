@@ -3,15 +3,17 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]),
   PORT: z.coerce.number().min(1000).max(65535),
-  POSTGRESQL_URI: z.string().startsWith("postgresql://"),
+  DATABASE_URL: z.string().startsWith("postgresql://"),
+  DIRECT_URL: z.string().startsWith("postgresql://"),
 });
 
-const parseEnviroment = () => {
+const parseEnvironment = () => {
   try {
     return envSchema.parse({
       NODE_ENV: process.env.NODE_ENV,
       PORT: process.env.PORT,
-      POSTGRESQL_URI: process.env.POSTGRESQL_URI,
+      DATABASE_URL: process.env.DATABASE_URL,
+      DIRECT_URL: process.env.DIRECT_URL,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -21,7 +23,7 @@ const parseEnviroment = () => {
   }
 };
 
-export const config = parseEnviroment();
+export const config = parseEnvironment();
 export const isDevelopment = config.NODE_ENV === "development";
 export const isProduction = config.NODE_ENV === "production";
 export const isTest = config.NODE_ENV === "test";

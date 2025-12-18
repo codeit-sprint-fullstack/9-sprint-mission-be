@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker/locale/ko";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const NUM_USERS_TO_CREATE = 5;
@@ -20,7 +22,7 @@ async function main() {
           },
         },
       },
-    }),
+    })
   );
 
   const users = await Promise.all(userPromise);
