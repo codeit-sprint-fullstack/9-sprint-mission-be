@@ -15,9 +15,9 @@ export class UserController extends BaseController {
 
   getMe = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { accessToken } = req.cookies;
+      const userId = this.getUserId(req)
 
-      const user = await this.userService.getAuthenticatedUser(accessToken);
+      const user = await this.userService.getAuthenticatedUser(userId);
 
       return this.sendSuccess(res, user, "인증 성공", 200);
     } catch (error) {
