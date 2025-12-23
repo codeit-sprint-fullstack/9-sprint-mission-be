@@ -7,6 +7,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().min(1000).max(65535).default(8080),
   DATABASE_URL: z.string().startsWith("postgresql://"),
   DIRECT_URL: z.string().startsWith("postgresql://"),
+  JWT_SECRET: z.string().min(12, "JWT은 최소 12자 이상이어야 합니다."),
 });
 
 type EnvConfig = z.infer<typeof envSchema>;
