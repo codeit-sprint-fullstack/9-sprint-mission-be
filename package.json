@@ -5,8 +5,9 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=./env/.env.development src/server.js",
-    "start": "node dist/src/server.js",
+    "type-check": "tsc",
+    "dev": "tsx watch --env-file=./env/.env.development src/server.js",
+    "start": "node --enable-source-maps dist/src/server.js",
     "build": "npx swc src -d dist && node dist/src/swagger.js",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
@@ -73,8 +74,20 @@
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@swc/jest": "^0.2.39",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.5.2",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.17",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
@@ -84,6 +97,8 @@
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^7.0.0",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
