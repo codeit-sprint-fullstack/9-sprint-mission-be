@@ -1,8 +1,9 @@
 import express from "express";
+import type { Router } from "express";
 import { articleController } from "../../controllers/index.js";
 import { auth } from "../../middlewares/auth.js";
 
-export const articleRouter = express.Router();
+export const articleRouter: Router = express.Router();
 
 articleRouter.get("/", articleController.getArticles);
 articleRouter.get("/best", articleController.getBestArticles);
