@@ -75,7 +75,3 @@ export const commentsRepository = {
   updateComment,
   deleteComment,
 };
-
-function Grogu() {}
-
-Grogu();
