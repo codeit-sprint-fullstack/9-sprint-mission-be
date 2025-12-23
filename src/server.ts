@@ -56,8 +56,10 @@ const setupApp = (): void => {
 
   if (isDevelopment) {
     app.use(morgan("dev"));
+    /** morgan 출력 외 특별한 커스텀이 필요할 때 */
     // app.use(logger);
-    app.use(reqTimer);
+    /** performance.now() 처럼 특별한 커스텀 포맷이 필요할때만 */
+    // app.use(reqTimer);
     // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
   }
 
