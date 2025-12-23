@@ -1,26 +1,28 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production", "test"]),
-  PORT: z.coerce.number().min(1000).max(65535),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+  PORT: z.coerce.number().min(1000).max(65535).default(8080),
   DATABASE_URL: z.string().startsWith("postgresql://"),
   DIRECT_URL: z.string().startsWith("postgresql://"),
 });
 
-const parseEnvironment = () => {
-  try {
-    return envSchema.parse({
-      NODE_ENV: process.env.NODE_ENV,
-      PORT: process.env.PORT,
-      DATABASE_URL: process.env.DATABASE_URL,
-      DIRECT_URL: process.env.DIRECT_URL,
+type EnvConfig = z.infer<typeof envSchema>;
+
+//config undefined일 가능성을 없애고 ,  에디터 내 자동완성을 위합
+const parseEnvironment = (): EnvConfig => {
+  const result = envSchema.safeParse(process.env);
+
+  if (!result.success) {
+    console.error("환경  변수 검증 실패:");
+    result.error.issues.forEach((issue) => {
+      console.error(`  - ${issue.path.join(".")}: ${issue.message}`);
     });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      console.log("error.errors", error);
-    }
     process.exit(1);
   }
+  return result.data;
 };
 
 export const config = parseEnvironment();
