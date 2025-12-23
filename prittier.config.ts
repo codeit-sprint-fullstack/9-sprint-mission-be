@@ -1,5 +1,5 @@
 const config = {
-  printWidth: 80,
+  printWidth: 100,
   tabWidth: 2,
   bracketSpacing: true,
   arrowParens: "always",

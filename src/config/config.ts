@@ -8,6 +8,11 @@ const envSchema = z.object({
   DATABASE_URL: z.string().startsWith("postgresql://"),
   DIRECT_URL: z.string().startsWith("postgresql://"),
   JWT_SECRET: z.string().min(12, "JWT은 최소 12자 이상이어야 합니다."),
+  //  Google OAuth Environment
+  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID가 누락되었습니다."),
+  GOOGLE_CLIENT_SECRET: z
+    .string()
+    .min(1, "GOOGLE_CLIENT_SECRET이 누락되었습니다."),
 });
 
 type EnvConfig = z.infer<typeof envSchema>;
