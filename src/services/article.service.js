@@ -42,11 +42,11 @@ export class ArticleService {
     return article;
   }
 
-  async createArticle(data) {
+  async createArticle(data,userId) {
     return await this.articleRepository.create(data);
   }
 
-  async updateArticle(articleId, data) {
+  async updateArticle(articleId, data,userId) {
     try {
       return await this.articleRepository.update(articleId, data);
     } catch (error) {
@@ -57,7 +57,7 @@ export class ArticleService {
     }
   }
 
-  async deleteArticle(articleId) {
+  async deleteArticle(articleId,userId) {
     try {
       return await this.articleRepository.delete(articleId);
     } catch (error) {

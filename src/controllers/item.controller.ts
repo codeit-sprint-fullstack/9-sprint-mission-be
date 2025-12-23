@@ -2,7 +2,6 @@ import type { Request, Response, NextFunction } from "express";
 import { HttpStatus } from "../common/constants/index";
 import { ItemService } from "../services/item.service";
 import { BaseController } from "./base.controller";
-import { UnAuthorizedException } from "../common/exceptions/error";
 
 export class ItemController extends BaseController {
   constructor(private readonly itemService: ItemService) {

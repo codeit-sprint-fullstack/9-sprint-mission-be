@@ -55,11 +55,7 @@ export class AuthController extends BaseController {
   refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { refreshToken } = req.cookies;
-      const userId = req.auth?.id;
-
-      if (!userId) {
-        throw new UnAuthorizedException("토큰 갱신을 위한 정보가 없습니다.");
-      }
+      const userId = this.getUserId(req)
 
       // Token 유효성 검증후 새로운 토큰들 생성
       const { newAccessToken, newRefreshToken } =
