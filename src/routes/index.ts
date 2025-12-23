@@ -1,9 +1,9 @@
 import express from "express";
 import type { Request, Response, Router } from "express";
-import { itemRouter } from "./v1/items.route.js";
-import { articleRouter } from "./v1/articles.route.js";
-import { authRouter } from "./v1/auth.route.js";
-import { userRouter } from "./v1/users.route.js";
+import { itemRouter } from "./v1/items.route";
+import { articleRouter } from "./v1/articles.route";
+import { authRouter } from "./v1/auth.route";
+import { userRouter } from "./v1/users.route";
 
 export const router: Router = express.Router();
 
