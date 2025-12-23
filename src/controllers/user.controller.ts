@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from "express";
-import { HttpStatus } from "../common/constants/index";
 import { UserService } from "../services/user.service";
 import { BaseController } from "./base.controller";
 
