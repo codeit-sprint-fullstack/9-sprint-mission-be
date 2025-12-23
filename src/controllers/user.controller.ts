@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction, Router } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { HttpStatus } from "../common/constants/index";
 import { UserService } from "../services/user.service";
 import { BaseController } from "./base.controller";
@@ -18,12 +18,6 @@ export class UserController extends BaseController {
     try {
       const { accessToken } = req.cookies;
 
-      if (!accessToken) {
-        res.status(HttpStatus.UNAUTHORIZED).json({
-          success: false,
-          message: "인증 토큰이 없습니다.",
-        });
-      }
       const user = await this.userService.getAuthenticatedUser(accessToken);
 
       return this.sendSuccess(res, user, "인증 성공", 200);

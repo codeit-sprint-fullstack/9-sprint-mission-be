@@ -1,4 +1,5 @@
-import { NextFunction, Router, type Response } from "express";
+import { NextFunction, Request, Router, type Response } from "express";
+import { UnAuthorizedException } from "../common/exceptions/error";
 
 /** 컨트롤러의 부모 추상 클래스 */
 export abstract class BaseController {
@@ -14,6 +15,18 @@ export abstract class BaseController {
    * TODO: 응집도상승 + DI Container + route파일제거 or 간소화
    */
   // public abstract initializeRoutes(): Router;
+
+  /**
+   * 인증된 사용자의 ID를 가져오는 헬퍼 메서드
+   * @throws {UnAuthorizedException} 인증 정보가 없을 경우 예외 발생
+   */
+  protected getUserId(req: Request): string {
+    const userId = req.auth?.id;
+    if (!userId) {
+      throw new UnAuthorizedException("인증 정보가 유효하지 않습니다.");
+    }
+    return userId;
+  }
 
   /**  next(error)를 통해 전역 errorHandler로 갑니다.*/
   protected nextError(next: NextFunction, error: unknown): void {
