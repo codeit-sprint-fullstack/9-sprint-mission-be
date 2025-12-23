@@ -11,7 +11,7 @@ model User {
   id                    String    @id @default(cuid())
   email                 String    @unique
   nickname              String
-  encryptedPassword     String
+  encryptedPassword     String?
   // 여러 기기 동시 로그인을 지원등 확장성이 필요할때 
   // 해당 스키마 테이블을 따로 관리 (구글,넷플릭스,네이버). 
   refreshToken          String?
