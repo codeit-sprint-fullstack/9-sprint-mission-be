@@ -1,9 +1,9 @@
-import express from "express";
+import express, { type Express } from "express";
+import type { Server } from "http";
 import { connectDB, disconnectDB } from "./db/prisma.js";
 import { config, isDevelopment, isProduction } from "./config/config.js";
 import { router } from "./routes/index.js";
 import { cors } from "./middlewares/cors.js";
-// import { logger } from "./middlewares/logger.js";
 import { reqTimer } from "./middlewares/reqTimer.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import passport from "./config/passport.js";
@@ -13,19 +13,20 @@ import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./swagger-output.json" with { type: "json" };
 import morgan from "morgan";
 
-const app = express();
-let server;
+const app: Express = express();
+let server: Server;
 
-const closeServer = async () => {
+/** Server & DB 을 안전하게 종료하는 함수*/
+const closeServer = async (): Promise<void> => {
   console.log("shutting down server...");
 
-  // 서버 종료(기존 요청 처리 대기)
+  // 서버 종료(기존 요청 처리)
   if (server) {
-    await new Promise((resolve, reject) => {
-      server.close((error) => {
+    await new Promise<void>((resolve, reject) => {
+      server.close((error?: Error) => {
         if (error) {
           console.error("Error during server close", error);
-          reject(error);
+          return reject(error);
         }
         console.log("HTTP server closed");
         resolve();
@@ -33,6 +34,7 @@ const closeServer = async () => {
     });
   }
 
+  // DB & Process 종료
   try {
     await disconnectDB();
     console.log("DB 연결이 성공적으로 종료되었습니다.");
@@ -45,7 +47,8 @@ const closeServer = async () => {
   }
 };
 
-const setupApp = () => {
+/** Express Router */
+const setupApp = (): void => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
@@ -72,7 +75,8 @@ const setupApp = () => {
 
 setupApp();
 
-async function bootStrap() {
+/** APP_START */
+async function bootStrap(): Promise<void> {
   try {
     await connectDB();
 
@@ -85,6 +89,7 @@ async function bootStrap() {
   }
 }
 
+/** OS SIGNER (Graceful Shutdown) */
 process.on("SIGTERM", closeServer);
 process.on("SIGINT", closeServer);
 
