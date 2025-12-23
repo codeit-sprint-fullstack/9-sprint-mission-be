@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/client";
 import { faker } from "@faker-js/faker/locale/ko";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -12,9 +12,9 @@ async function main() {
   const userPromise = Array.from({ length: NUM_USERS_TO_CREATE }).map(() =>
     prisma.user.create({
       data: {
-        name: faker.person.fullName(),
+        nickname: faker.person.fullName(),
         email: faker.internet.email(),
-        password: faker.internet.password(),
+        encryptedPassword: faker.internet.password(),
         userProfile: {
           create: {
             photoUrl: faker.image.avatar(),
@@ -59,11 +59,10 @@ async function main() {
         users[faker.number.int({ min: 0, max: users.length - 1 })];
       return prisma.item.create({
         data: {
-          userId: randomUser.id,
+          authorId: randomUser.id,
           name: faker.commerce.product(),
           description: faker.lorem.paragraph({ min: 2, max: 7 }),
           price: faker.commerce.price({ min: 1000, symbol: "₩" }),
-          tags: faker.lorem.sentences({ min: 1, max: 3 }),
         },
       });
     });
@@ -76,11 +75,11 @@ async function main() {
     const commentPromises = Array.from({ length: commentCount }).map(() => {
       const randomUser =
         users[faker.number.int({ min: 0, max: users.length - 1 })];
-      return prisma.comment.create({
+      return prisma.itemComment.create({
         data: {
           context: faker.lorem.sentences({ min: 1, max: 3 }),
-          authorId: randomUser.id,
-          articleId: post.id,
+          userId: randomUser.id,
+          itemId: post.id,
         },
       });
     });
