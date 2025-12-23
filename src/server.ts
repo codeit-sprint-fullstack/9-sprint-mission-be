@@ -1,16 +1,16 @@
 import express, { type Express } from "express";
 import type { Server } from "http";
-import { connectDB, disconnectDB } from "./db/prisma.js";
-import { config, isDevelopment, isProduction } from "./config/config.js";
-import { router } from "./routes/index.js";
-import { cors } from "./middlewares/cors.js";
-import { reqTimer } from "./middlewares/reqTimer.js";
-import { errorHandler } from "./middlewares/errorHandler.js";
-import passport from "./config/passport.js";
+import { connectDB, disconnectDB } from "./db/prisma";
+import { config, isDevelopment, isProduction } from "./config/config";
+import { router } from "./routes/index";
+import { cors } from "./middlewares/cors";
+import { reqTimer } from "./middlewares/reqTimer";
+import { errorHandler } from "./middlewares/errorHandler";
+import passport from "./config/passport";
 import cookieParser from "cookie-parser";
 
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "./swagger-output.json" with { type: "json" };
+// import swaggerFile from "./swagger-output.json" with { type: "json" };
 import morgan from "morgan";
 
 const app: Express = express();
@@ -58,7 +58,7 @@ const setupApp = (): void => {
     app.use(morgan("dev"));
     // app.use(logger);
     app.use(reqTimer);
-    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+    // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
   }
 
   if (isProduction) {

@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "description": "panda-express-server",
   "main": "src/server.js",
-  "type": "module",
   "scripts": {
     "type-check": "tsc",
     "dev": "tsx watch --env-file=./env/.env.development src/server.js",

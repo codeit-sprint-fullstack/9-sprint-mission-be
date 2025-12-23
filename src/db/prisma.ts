@@ -1,4 +1,4 @@
-import { PrismaClient, type Prisma } from "../generated/client.js";
+import { PrismaClient, type Prisma } from "../generated/client";
 import { exit } from "node:process";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
