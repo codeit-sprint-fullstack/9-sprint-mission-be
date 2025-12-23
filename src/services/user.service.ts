@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from "../common/exceptions/error";
 import { UserRepository, userRepository } from "../repositories/user.repository";
+import { User } from "../types/user";
 
 export class UserService {
   constructor(private readonly userRepository:UserRepository) {}
@@ -12,7 +13,7 @@ export class UserService {
   /**
    * 미들웨어에서 추출된 유저아이디 바탕으로 유저 정보를 반환 
    */
-  async getAuthenticatedUser(userId: string) {
+  async getAuthenticatedUser(userId: string):Promise<Omit<User,"encryptedPassword"  | "refreshToken">> {
     const user = await this.userRepository.findUserById(userId);
 
     if (!user) {
