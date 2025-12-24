@@ -39,6 +39,18 @@ itemRouter.post(
   itemController.createItem
 );
 
+itemRouter.post(
+  "/:itemId/comment",
+  auth.verifyAccessToken,
+  itemController.createComment
+)
+
+itemRouter.delete(
+  "/:itemId/comment/:commentId",
+  auth.verifyAccessToken,
+  itemController.deleteComment
+)
+
 itemRouter.patch(
   "/:itemId",
   auth.verifyAccessToken,
@@ -47,6 +59,7 @@ itemRouter.patch(
   validateBody(updateItemSchema),
   itemController.updateItem
 );
+
 
 itemRouter.delete(
   "/:itemId",

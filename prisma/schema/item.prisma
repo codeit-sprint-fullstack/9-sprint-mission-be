@@ -1,16 +1,16 @@
 model Item {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   authorId    String
   name        String
   description String
   price       String
   images      String[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  itemComments ItemComment[] 
+  itemComments ItemComment[]
 
-  user      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   tags      Tag[]
   itemLikes ItemLike[]
 }
@@ -19,6 +19,7 @@ model ItemComment {
   id        String   @id @default(cuid())
   userId    String
   itemId    String
+  context   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -28,18 +29,18 @@ model ItemComment {
 
 model ItemLike {
   id        String   @id @default(cuid())
-  userId    String 
+  userId    String
   itemId    String
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete:Cascade)
-  item Item @relation(fields: [itemId], references: [id], onDelete:Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@unique([itemId, userId])
 }
 
 model Tag {
   id    String @id @default(cuid())
-  name  String @unique 
+  name  String @unique
   items Item[]
 }

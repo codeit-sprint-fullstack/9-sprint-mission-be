@@ -8,6 +8,7 @@ export class ItemController extends BaseController {
     super();
   }
 
+  /** 아이템 목록을  가져옵니다. */
   getItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const page = Number(req.query.page) || 1;
@@ -32,6 +33,7 @@ export class ItemController extends BaseController {
     }
   };
 
+  /** 아이템 상세 */
   getItemById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { itemId } = req.params;
@@ -43,6 +45,7 @@ export class ItemController extends BaseController {
     }
   };
 
+  /** 아이템 생성 */
   createItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authorId = this.getUserId(req);
@@ -69,6 +72,7 @@ export class ItemController extends BaseController {
     }
   };
 
+  /** 상품 업데이트 */
   updateItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { itemId } = req.params;
@@ -86,6 +90,7 @@ export class ItemController extends BaseController {
     }
   };
 
+  /** 아이템 삭제 */
   deleteItem = async (req: Request, res: Response, next: NextFunction) => {
     const userId = this.getUserId(req);
     const { itemId } = req.params;
@@ -98,4 +103,33 @@ export class ItemController extends BaseController {
       this.nextError(next, error);
     }
   };
+
+  /** 댓글 생성 */
+  createComment = async(req:Request,res:Response,next:NextFunction) => {
+    try {
+      const {itemId} = req.params ;
+      const {context} = req.body;
+      const userId = this.getUserId(req)
+
+      const newComment = await this.itemService.addComment(itemId, userId, context)
+
+      return this.sendSuccess(res,newComment,"댓글이 등록되었습니다.",201)
+    } catch (error) {
+      this.nextError(next,error) 
+    }
+  }
+
+  /** 댓글 삭제 */
+  deleteComment = async(req:Request,res:Response,next:NextFunction) => {
+    try {
+      const { commentId } = req.params
+      const userId = this.getUserId(req) 
+
+      await this.itemService.deleteComment(commentId, userId)
+
+      return this.sendSuccess(res,null,"댓글이 성공적으로 삭제되었습니다.")
+    } catch (error) {
+      this.nextError(next,error) 
+    }
+  }
 }

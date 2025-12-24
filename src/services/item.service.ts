@@ -72,7 +72,7 @@ export class ItemService {
     price: string;
     tags: string[];
     images: UploadFile[];
-    authorId: string
+    authorId: string;
   }) {
     const imageUrls = images.map((file: UploadFile) => file.path);
 
@@ -91,7 +91,7 @@ export class ItemService {
       if (images && images.length > 0) {
         await this.rollbackUploadFiles(images);
       }
-      throw error
+      throw error;
     }
   }
 
@@ -124,7 +124,7 @@ export class ItemService {
     try {
       await this.itemRepository.delete(itemId);
     } catch (error) {
-      if (error  instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2025") {
           throw new NotFoundException(NOT_FOUND_ITEM);
         }
@@ -133,17 +133,48 @@ export class ItemService {
     }
   }
 
+  /** 댓글 등록 */
+  async addComment(itemId: string, userId: string, context: string) {
+    const item = this.getItemById(itemId);
+
+    if (!item) {
+      throw new NotFoundException("존재하지  않는 상품입니다.");
+    }
+
+    const createdData = await this.itemRepository.commentCreate(
+      itemId,
+      userId,
+      context
+    );
+    return createdData;
+  }
+
+  /** 댓글 삭제 */
+  async deleteComment(commentId:string, userId:string) {
+    const comment = await itemRepository.findByCommentId(commentId)
+
+    if(!comment) {
+      throw new NotFoundException("존재하지 않는 댓글입니다.")
+    }
+
+    if(comment.userId !== userId) {
+      throw new UnAuthorizedException("삭제 권한이 없습니다.")
+    }
+
+    return await this.itemRepository.deleteComment(commentId)
+  }
+
   // ---- helper ----
   /** 업로된 파일 물리적 삭제 헬퍼 */
-  private async rollbackUploadFiles(files: UploadFile[]):Promise<void> {
+  private async rollbackUploadFiles(files: UploadFile[]): Promise<void> {
     const deletePromise = files.map(async (file) => {
       try {
         // file.path가 전체 경로인 경우와 상대인 경우
-        const  filePath = path.isAbsolute(file.path)
+        const filePath = path.isAbsolute(file.path)
           ? file.path
-          : path.join(process.cwd(), file.path)
-          await fs.unlink(filePath)
-          console.log(`[Rollback] 파일 삭제 성공: ${filePath}`)
+          : path.join(process.cwd(), file.path);
+        await fs.unlink(filePath);
+        console.log(`[Rollback] 파일 삭제 성공: ${filePath}`);
       } catch (error) {
         console.log(`[Rollback] 파일 삭제 실패: ${file.path}`, error);
       }

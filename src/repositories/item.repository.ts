@@ -26,8 +26,18 @@ export class ItemRepository {
     const where: Prisma.ItemWhereInput = keyword
       ? {
           OR: [
-            { name: { contains: keyword, mode: "insensitive" as Prisma.QueryMode } },
-            { description: { contains: keyword, mode: "insensitive" as Prisma.QueryMode} },
+            {
+              name: {
+                contains: keyword,
+                mode: "insensitive" as Prisma.QueryMode,
+              },
+            },
+            {
+              description: {
+                contains: keyword,
+                mode: "insensitive" as Prisma.QueryMode,
+              },
+            },
           ],
         }
       : {};
@@ -176,6 +186,48 @@ export class ItemRepository {
   //     data: { deleteAt: new Date() },
   //   });
   // }
+
+  /** 아이디로 댓글 찾기 */
+  async findByCommentId(commentId: string) {
+    try {
+      return await this.prisma.itemComment.findUnique({
+        where: { id: commentId },
+      });
+    } catch (error) {
+      console.error("댓글 삭제 레포지토리 오류:",error)
+      throw error
+    }
+  }
+
+  /** item댓글 생성 */
+  async commentCreate(itemId: string, userId: string, context: string) {
+    return await this.prisma.itemComment.create({
+      data: {
+        context,
+        item: {
+          connect: { id: itemId },
+        },
+        author: {
+          connect: { id: userId },
+        },
+      },
+      include: {
+        author: {
+          select: {
+            nickname: true,
+            userProfile: true,
+          },
+        },
+      },
+    });
+  }
+
+  /** item 댓글 삭제 */
+  async deleteComment(commentId: string) {
+    return await this.prisma.itemComment.delete({
+      where: { id: commentId },
+    });
+  }
 }
 
 export const itemRepository = new ItemRepository(prisma);
