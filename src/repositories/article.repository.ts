@@ -1,22 +1,34 @@
-import { prisma } from "../db/prisma.js";
+import { prisma } from "../db/prisma";
+import type { PrismaClient, Prisma } from "../generated/client";
+
+ type OrderByType = "recent" | "favorite"
 
 export class ArticleRepository {
-  constructor(prismaClient) {
-    this.prisma = prismaClient;
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
-  async findAll({ skip, take, orderBy, keyword }) {
-    const sortOptions = {
-      recent: { createdAt: "desc" },
+  /** 아티클 목록 조회 */
+  async findAll({
+    skip,
+    take,
+    orderBy,
+    keyword,
+  }: {
+    skip?: number;
+    take?: number;
+    orderBy: OrderByType;
+    keyword?: string;
+  }) {
+    const sortOptions: Prisma.ArticleOrderByWithRelationInput = {
+      recent: { createdAt: "desc"  as Prisma.SortOrder},
       // 추후 favorite orderBy
-      favorite: { createdAt: "desc" },
-    }[orderBy] ?? { createdAt: "desc" };
+      favorite: { createdAt: "desc"  as Prisma.SortOrder},
+    }[orderBy ?? "recent"] ?? { createdAt: "desc" };
 
-    const where = keyword
+    const where:Prisma.ArticleWhereInput = keyword
       ? {
           OR: [
-            { title: { contains: keyword, mode: "insensitive" } },
-            { content: { contains: keyword, mode: "insensitive" } },
+            { title: { contains: keyword, mode: "insensitive" as Prisma.QueryMode } },
+            { content: { contains: keyword, mode: "insensitive" as Prisma.QueryMode} },
           ],
         }
       : {};
@@ -40,6 +52,7 @@ export class ArticleRepository {
     return { articles, total };
   }
 
+  /** 베스트 아티클 목록 조회 */
   async findBestAll() {
     const bestArticles = await this.prisma.article.findMany({
       orderBy: {
@@ -57,7 +70,7 @@ export class ArticleRepository {
     return bestArticles;
   }
 
-  async findById(articleId) {
+  async findById(articleId: string) {
     return await this.prisma.article.findUnique({
       where: { id: articleId },
       include: {
@@ -66,12 +79,12 @@ export class ArticleRepository {
             userProfile: true,
           },
         },
-      },
-      review: {
-        include: {
-          author: {
-            include: {
-              userProfile: true,
+        review: {
+          include: {
+            author: {
+              include: {
+                userProfile: true,
+              },
             },
           },
         },
@@ -79,18 +92,18 @@ export class ArticleRepository {
     });
   }
 
-  async create(data) {
+  async create(data: Prisma.ArticleCreateInput) {
     return await this.prisma.article.create({ data });
   }
 
-  async update(articleId, data) {
+  async update(articleId:string, data:Prisma.ArticleUpdateInput) {
     return await this.prisma.article.update({
       where: { id: articleId },
       data,
     });
   }
 
-  async delete(articleId) {
+  async delete(articleId:string) {
     return await this.prisma.article.delete({
       where: { id: articleId },
     });
