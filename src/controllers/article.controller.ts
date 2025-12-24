@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { HttpStatus } from "../common/constants/index.js";
-import { ArticleService } from "../services/article.service.js";
-import { BaseController } from "./base.controller.js";
+import { HttpStatus } from "../common/constants/index";
+import { ArticleService } from "../services/article.service";
+import { BaseController } from "./base.controller";
 
 export class ArticleController extends BaseController {
   constructor(private readonly articleService: ArticleService) {
@@ -13,21 +13,23 @@ export class ArticleController extends BaseController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> => {
+  ) => {
     try {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
-      const { keyword, orderBy } = req.query;
+      
+      const keyword = req.query.keyword as string || undefined
+      const orderBy = (req.query.orderBy as "recent" | "favorite") || "recent"
 
       const { articles, total, totalPage } =
         await this.articleService.getArticles({
           page: page,
           limit: limit,
-          keyword: keyword as string,
-          orderBy: orderBy as string,
+          keyword,
+          orderBy
         });
 
-      res.status(HttpStatus.OK).json({
+      return res.status(HttpStatus.OK).json({
         success: true,
         message: "성공적으로 게시물을 가져왔습니다.",
         data: articles,
@@ -67,11 +69,12 @@ export class ArticleController extends BaseController {
       const { title, content, images } = req.body;
       const userId = this.getUserId(req)
 
-      const newArticle = await this.articleService.createArticle({
+      const newArticle = await this.articleService.createArticle(
+        userId, 
+        {
         title,
         content,
-        images,
-        userId
+        image: images?.[0],
       });
 
       return this.sendSuccess(res,newArticle,"게시물 생성에 성공했습니다.",201);
@@ -87,7 +90,7 @@ export class ArticleController extends BaseController {
       const data = req.body;
       const userId = this.getUserId(req)
 
-      const updatedArticle = await this.articleService.updateArticle(articleId,data,userId);
+      const updatedArticle = await this.articleService.updateArticle(articleId,userId,data);
 
       return this.sendSuccess(res,updatedArticle,"게시물 업데이트에 성공했습니다.");
     } catch (error) {

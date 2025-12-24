@@ -12,13 +12,14 @@ export class ItemController extends BaseController {
     try {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
-      const { keyword, orderBy } = req.query;
+      const keyword = req.query.keyword as string | undefined
+      const orderBy = (req.query.orderBy as "recent" | "oldest") || "recent"
 
       const { items, total, totalPage } = await this.itemService.getItems({
         page: page,
         limit: limit,
-        keyword: keyword as string,
-        orderBy: orderBy as string,
+        keyword,
+        orderBy,
       });
 
       return res.status(HttpStatus.OK).json({
@@ -44,7 +45,7 @@ export class ItemController extends BaseController {
 
   createItem = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = this.getUserId(req);
+      const authorId = this.getUserId(req);
       const { name, description, price, tags } = req.body;
       const images = req.files as Express.Multer.File[];
 
@@ -54,7 +55,7 @@ export class ItemController extends BaseController {
         price,
         tags,
         images,
-        userId,
+        authorId,
       });
 
       return this.sendSuccess(
