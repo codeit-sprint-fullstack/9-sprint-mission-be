@@ -1,7 +1,7 @@
 import express from "express";
 import type { Router } from "express";
-import { articleController } from "../../controllers/index.js";
-import { auth } from "../../middlewares/auth.js";
+import { articleController } from "../../controllers/index";
+import { auth } from "../../middlewares/auth";
 
 export const articleRouter: Router = express.Router();
 

@@ -1,18 +1,18 @@
 import express from "express";
 import type { NextFunction, Request, Response, Router } from "express";
 
-import { validateBody } from "../../middlewares/validate.js";
-import { createItemSchema, updateItemSchema } from "../../dto/item.dto.js";
-import { itemController } from "../../controllers/index.js";
-import { auth } from "../../middlewares/auth.js";
-import { upload } from "../../middlewares/multer.js";
+import { validateBody } from "../../middlewares/validate";
+import { createItemSchema, updateItemSchema } from "../../dto/item.dto";
+import { itemController } from "../../controllers/index";
+import { auth } from "../../middlewares/auth";
+import { upload } from "../../middlewares/multer";
 
 export const itemRouter: Router = express.Router();
 
 /** 업로드된 파일 정보(multer)를 body의 images필드로 변환하는 미들웨어 */
 const assignImageUrlToBody = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   if (req.files && Array.isArray(req.files)) {
