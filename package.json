@@ -4,10 +4,11 @@
   "description": "panda-express-server",
   "main": "src/server.js",
   "scripts": {
+    "prebuild": "rm -rf dist",
     "type-check": "tsc",
     "dev": "tsx watch --env-file=./env/.env.development src/server.js",
     "start": "node --enable-source-maps dist/src/server.js",
-    "build": "npx swc src -d dist && node dist/src/swagger.js",
+    "build": "npm run migrate:deploy && npm run generate && npx swc src -d dist && npm run copy:assets && npm run copy:prisma",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
     "prisma": "node --env-file=./env/.env.development node_modules/prisma/build/index.js",
@@ -18,7 +19,9 @@
     "generate": "npm run prisma generate",
     "studio": "npm run prisma -- studio",
     "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
-    "test:watch": "dotenv -e ./env/.env.test -- jest --watch"
+    "test:watch": "dotenv -e ./env/.env.test -- jest --watch",
+    "copy:prisma": "cp -r src/generate dist/src",
+    "copy:assets": "cp -r src/swaggerDocs dist/src/swaggerDocs"
   },
   "lint-staged": {
     "**/*.(js.jsx.ts.tsx)": [
