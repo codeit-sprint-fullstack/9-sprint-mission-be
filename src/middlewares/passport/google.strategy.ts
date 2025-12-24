@@ -3,8 +3,8 @@ import {
   type VerifyCallback,
   type Profile,
 } from "passport-google-oauth20";
-import { config } from "@config/config.js";
-import { authService } from "../../services/auth.service.js";
+import { config } from "@config/config";
+import { authService } from "../../services/auth.service";
 
 const googleStrategyOptions = {
   clientID: config.GOOGLE_CLIENT_ID,

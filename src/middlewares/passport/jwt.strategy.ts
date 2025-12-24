@@ -4,8 +4,8 @@ import {
   StrategyOptions,
   VerifiedCallback,
 } from "passport-jwt";
-import { authRepository } from "../../repositories/auth.repository.js";
-import { config } from "@config/config.js";
+import { authRepository } from "../../repositories/auth.repository";
+import { config } from "@config/config";
 
 /** JWT Payload type alias */
 type JwtPayload = {

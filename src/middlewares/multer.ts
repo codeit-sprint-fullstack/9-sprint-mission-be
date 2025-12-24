@@ -1,9 +1,9 @@
 /** @see https://inpa.tistory.com/entry/EXPRESS-%F0%9F%93%9A-multer-%EB%AF%B8%EB%93%A4%EC%9B%A8%EC%96%B4 */
 import type { Request } from "express";
-import multer, { FileFilterCallback, MulterError } from "multer";
+import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs";
-import { BadRequestException } from "../common/exceptions/index.js";
+import { BadRequestException } from "../common/exceptions/index";
 import { v4 as uuidv4 } from "uuid";
 
 /** uploads 디렉토리 설정 및 초기화 */

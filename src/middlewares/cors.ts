@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { isDevelopment } from "../config/config.js";
+import { isDevelopment } from "../config/config";
 
 /** CORS 설정 미들웨어 */
 export const cors = (

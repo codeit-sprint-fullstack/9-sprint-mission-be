@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import z from "zod";
-import { HttpStatus } from "../common/constants/httpStatus.js";
+import { HttpStatus } from "../common/constants/httpStatus";
 
 /**
  * Query Parameter 유효성 검사
