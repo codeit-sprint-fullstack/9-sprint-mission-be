@@ -4,16 +4,17 @@ import { connectDB, disconnectDB } from "./db/prisma";
 import { config, isDevelopment, isProduction } from "./config/config";
 import { router } from "./routes/index";
 import { cors } from "./middlewares/cors";
-import { reqTimer } from "./middlewares/reqTimer";
 import { errorHandler } from "./middlewares/errorHandler";
 import passport from "./config/passport";
 import cookieParser from "cookie-parser";
 
 import swaggerUi from "swagger-ui-express";
-// import swaggerFile from "./swagger-output.json" with { type: "json" };
 import morgan from "morgan";
+import { swaggerOptions } from "@config/swagger";
+import swaggerJSDoc from "swagger-jsdoc";
 
 const app: Express = express();
+const specs = swaggerJSDoc(swaggerOptions)
 let server: Server;
 
 /** Server & DB 을 안전하게 종료하는 함수*/
@@ -60,7 +61,7 @@ const setupApp = (): void => {
     // app.use(logger);
     /** performance.now() 처럼 특별한 커스텀 포맷이 필요할때만 */
     // app.use(reqTimer);
-    // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
   }
 
   if (isProduction) {
