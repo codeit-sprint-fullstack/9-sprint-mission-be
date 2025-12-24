@@ -21,7 +21,7 @@ export abstract class BaseController {
    * @throws {UnAuthorizedException} 인증 정보가 없을 경우 예외 발생
    */
   protected getUserId(req: Request): string {
-    const userId = req.auth?.id;
+    const userId = req.auth?.userId;
     if (!userId) {
       throw new UnAuthorizedException("인증 정보가 유효하지 않습니다.");
     }

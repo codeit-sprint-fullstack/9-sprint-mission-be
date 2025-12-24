@@ -5,7 +5,7 @@ declare global {
     interface Request {
       valid?: boolean;
       auth?: {
-        id: string;
+        userId: string;
         iat: number;
         exp: number;
         // JWT Payload
