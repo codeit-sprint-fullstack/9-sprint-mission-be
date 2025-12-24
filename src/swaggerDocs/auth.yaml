@@ -1,0 +1,99 @@
+paths:
+  /auth/signUp:
+    post:
+      summary: 회원가입
+      tags: [Auth]
+      description: "이미 로그인된 사용자는 접근할 수 없습니다. (alreadyAuthenticated)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, nickname, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                nickname:
+                  type: string
+                  example: "판다왕"
+                password:
+                  type: string
+                  format: password
+                  example: "password123!"
+      responses:
+        201:
+          description: 회원가입 성공
+        400:
+          description: 잘못된 요청 형식
+
+  /auth/signIn:
+    post:
+      summary: 로그인 (이메일)
+      tags: [Auth]
+      description: "성공 시 accessToken과 refreshToken 쿠키가 설정됩니다."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        200:
+          description: 로그인 성공
+        401:
+          description: 이메일 또는 비밀번호 불일치
+
+  /auth/signOut:
+    post:
+      summary: 로그아웃
+      tags: [Auth]
+      security:
+        - cookieAuth: []
+      description: "accessToken 쿠키를 검증한 후 쿠키를 만료시킵니다."
+      responses:
+        200:
+          description: 로그아웃 성공
+
+  /auth/refresh-token:
+    post:
+      summary: 토큰 재발급
+      tags: [Auth]
+      security:
+        - refreshTokenAuth: []
+      description: "refreshToken 쿠키를 검증하여 새로운 accessToken을 발급합니다."
+      responses:
+        200:
+          description: 재발급 성공
+        401:
+          description: 유효하지 않은 RefreshToken
+
+  /auth/google:
+    get:
+      summary: 구글 소셜 로그인 시작
+      tags: [Auth]
+      description: "구글 로그인 페이지로 리다이렉트합니다."
+      responses:
+        302:
+          description: 구글 로그인 페이지로 이동
+
+  /auth/google/callback:
+    get:
+      summary: 구글 로그인 콜백
+      tags: [Auth]
+      description: "구글 로그인 성공 후 서버로 돌아오는 엔드포인트입니다."
+      responses:
+        200:
+          description: 소셜 로그인 성공 및 쿠키 발급
+        401:
+          description: 구글 인증 실패
