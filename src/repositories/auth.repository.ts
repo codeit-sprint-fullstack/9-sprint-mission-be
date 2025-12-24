@@ -35,6 +35,7 @@ export class AuthRepository {
     });
   }
 
+  /** 소셜 로그인 */
   async createOrUpdate(provider:string, providerId:string, email:string, nickname:string):Promise<User> {
     return await this.prisma.user.upsert({
       where: { provider, providerId },
