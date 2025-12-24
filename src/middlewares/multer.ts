@@ -3,7 +3,7 @@ import type { Request } from "express";
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
 import fs from "fs";
-import { BadRequestException } from "../common/exceptions/index";
+import { BadRequestException } from "../common/exceptions/error";
 import { v4 as uuidv4 } from "uuid";
 
 /** uploads 디렉토리 설정 및 초기화 */
