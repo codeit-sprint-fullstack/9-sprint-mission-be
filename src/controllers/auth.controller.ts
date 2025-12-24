@@ -1,8 +1,9 @@
+import { AuthService } from "../services/auth.service";
+import { BaseController } from "./base.controller";
+import { config } from "@config/config";
+import { UnAuthorizedException } from "../common/exceptions/error";
 import type { Request, Response, NextFunction } from "express";
-import { AuthService } from "../services/auth.service.js";
-import { BaseController } from "./base.controller.js";
-import { config } from "@config/config.js";
-import { UnAuthorizedException } from "../common/exceptions/error.js";
+import type{ User } from "../types/user";
 
 export class AuthController extends BaseController {
   constructor(private readonly authService: AuthService) {
@@ -74,12 +75,14 @@ export class AuthController extends BaseController {
   googleCallback = async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Passport Strategy를  통해 성공적으로 생성한  유저 객체
-      const user = req.user;
-      if (!user) throw new UnAuthorizedException("구글 인증 정보가 없습니다.");
+      if (!req.user) {
+         new UnAuthorizedException("구글 인증 정보가 없습니다.");
+      }
+      const user = req.user as User;
 
       // 소셜 유저를 위한 토큰 생성
-      const accessToken = this.authService.createToken(req.user);
-      const refreshToken = this.authService.createToken(req.user, "refresh");
+      const accessToken = this.authService.createToken(user);
+      const refreshToken = this.authService.createToken(user, "refresh");
 
       this.setAuthCookies(res, accessToken, refreshToken);
 

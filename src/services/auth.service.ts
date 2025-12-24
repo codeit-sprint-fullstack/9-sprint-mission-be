@@ -21,11 +21,9 @@ export class AuthService {
   constructor(private readonly authRepository: AuthRepository) {}
 
   /** 새로운 유저 생성 (회원가입) */
-  async createUser(
-    data: Pick<User, "email" | "nickname" | "encryptedPassword">
-  ): Promise<UserProfile> {
-    const { email, nickname, encryptedPassword } = data;
-    if (!email || !nickname || !encryptedPassword) {
+  async createUser(data: SignUpDto): Promise<UserProfile> {
+    const { email, nickname, password } = data;
+    if (!email || !nickname || !password) {
       throw new BadRequestException(FAILED_SIGNUP_INPUT);
     }
     // 중복된 유저
@@ -35,22 +33,23 @@ export class AuthService {
       throw new ConflictException(CONFLICT_USER);
     }
 
-    const hashedPassword = await this.hashPassword(encryptedPassword);
+    const encryptedPassword = await this.hashPassword(password);
+
     const createdUser = await this.authRepository.save({
       email,
       nickname,
-      encryptedPassword: hashedPassword,
+      encryptedPassword,
     });
     return this.filterSensitiveUserData(createdUser);
   }
 
   /** 유저 인증 (로그인)*/
   async getUser(
-    data: Pick<User, "email" | "encryptedPassword">
+    data: LoginInDto 
   ): Promise<UserProfile> {
-    const { email, encryptedPassword } = data;
+    const { email, password } = data;
 
-    if (!email || !encryptedPassword) {
+    if (!email || !password) {
       throw new BadRequestException(FAILED_SIGNIN_INPUT);
     }
 
@@ -60,7 +59,7 @@ export class AuthService {
     }
 
     // 비밀번호 검증 (실패시 내부에서 UnAuthorizedException)
-    await this.verifyPassword(encryptedPassword, user.encryptedPassword);
+    await this.verifyPassword(password, user.encryptedPassword);
     return this.filterSensitiveUserData(user);
   }
 

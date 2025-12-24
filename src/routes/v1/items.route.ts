@@ -2,7 +2,7 @@ import express from "express";
 import type { NextFunction, Request, Response, Router } from "express";
 
 import { validateBody } from "../../middlewares/validate";
-import { createItemSchema, updateItemSchema } from "../../dto/item.dto";
+import { createItemSchema, updateItemSchema } from "../dto/item.dto";
 import { itemController } from "../../controllers/index";
 import { auth } from "../../middlewares/auth";
 import { upload } from "../../middlewares/multer";

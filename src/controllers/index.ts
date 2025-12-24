@@ -1,18 +1,18 @@
-import { ArticleController } from "./article.controller.js";
-import { ArticleService } from "../services/article.service.js";
-import { articleRepository } from "../repositories/article.repository.js";
+import { ArticleController } from "./article.controller";
+import { ArticleService } from "../services/article.service";
+import { articleRepository } from "../repositories/article.repository";
 
-import { ItemController } from "./item.controller.js";
-import { ItemService } from "../services/item.service.js";
-import { itemRepository } from "../repositories/item.repository.js";
+import { ItemController } from "./item.controller";
+import { ItemService } from "../services/item.service";
+import { itemRepository } from "../repositories/item.repository";
 
-import { AuthController } from "./auth.controller.js";
-import { AuthService } from "../services/auth.service.js";
-import { authRepository } from "../repositories/auth.repository.js";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "../services/auth.service";
+import { authRepository } from "../repositories/auth.repository";
 
-import { UserController } from "./user.controller.js";
-import { UserService } from "../services/user.service.js";
-import { userRepository } from "../repositories/user.repository.js";
+import { UserController } from "./user.controller";
+import { UserService } from "../services/user.service";
+import { userRepository } from "../repositories/user.repository";
 
 /** @see  https://alexkondov.com/tao-of-node/#consider-di-over-mocking */
 
