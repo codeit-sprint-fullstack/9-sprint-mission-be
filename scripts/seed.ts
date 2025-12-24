@@ -77,7 +77,7 @@ async function main() {
         users[faker.number.int({ min: 0, max: users.length - 1 })];
       return prisma.itemComment.create({
         data: {
-          context: faker.lorem.sentences({ min: 1, max: 3 }),
+          // content: faker.lorem.sentences({ min: 1, max: 3 }),
           userId: randomUser.id,
           itemId: post.id,
         },
