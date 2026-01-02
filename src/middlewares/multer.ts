@@ -6,6 +6,7 @@ import path from "path";
 import { BadRequestException } from "../common/exceptions/error";
 import { v4 as uuidv4 } from "uuid";
 import { S3Client } from "@aws-sdk/client-s3";
+import { config } from "@config/config";
 
 /** uploads 디렉토리 설정 및 초기화 */
 // const uploadDir = "uploads";
@@ -14,10 +15,10 @@ import { S3Client } from "@aws-sdk/client-s3";
 // }
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION,
+  region: config.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: config.AWS_ACCESS_KEY_ID,
+    secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
   },
 });
 
@@ -27,15 +28,15 @@ const s3 = new S3Client({
 // const storage = isProduction ? multerS3(S3) : multer.diskStorage(기존로컬)
 const storage = multerS3({
   s3: s3,
-  bucket: process.env.AWS_S3_BUCKET_NAME!,
-  acl: 'public-read',                                                     // 권한: 업로드된 파일을 외부에서 읽을 수 있게 한다.
-  contentType: multerS3.AUTO_CONTENT_TYPE,    // 파일 mimetype 자동 설정 (매우 중요!)
-  key: (_req,file,done) => {
+  bucket: config.AWS_S3_BUCKET_NAME,
+  acl: "public-read", // 권한: 업로드된 파일을 외부에서 읽을 수 있게 한다.
+  contentType: multerS3.AUTO_CONTENT_TYPE, // 파일 mimetype 자동 설정 (매우 중요!)
+  key: (_req, file, done) => {
     const randomId = uuidv4();
     const ext = path.extname(file.originalname);
-    const filename  = `uploads/${randomId}${ext}`
-    done(null, filename)
-  } 
+    const filename = `uploads/${randomId}${ext}`;
+    done(null, filename);
+  },
 });
 
 /**  파일 필터링: 허용된 확장자(JPEG, JPG, PNG)만 업로드 허용 */
