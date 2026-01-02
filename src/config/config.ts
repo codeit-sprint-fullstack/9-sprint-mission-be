@@ -13,6 +13,16 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z
     .string()
     .min(1, "GOOGLE_CLIENT_SECRET이 누락되었습니다."),
+  // AWS S3 Environment
+  AWS_REGION: z
+    .string()
+    .min(1, "AWS_REGION이 누락되었습니다.")
+    .default("ap-northeast-2"),
+  AWS_S3_BUCKET_NAME: z.string().min(1, "AWS_SE_BUCKET_NAME이 누락되었습니다."),
+  AWS_ACCESS_KEY_ID: z.string().min(1, "AWS_ACCESS_KEY가 누락되었습니다."),
+  AWS_SECRET_ACCESS_KEY: z
+    .string()
+    .min(1, "AWS_SECRET_ACCESS_KEY가 누락되었습니다."),
 });
 
 type EnvConfig = z.infer<typeof envSchema>;
