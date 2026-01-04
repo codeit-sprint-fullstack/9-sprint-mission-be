@@ -1,0 +1,34 @@
+components:
+  schemas:
+    UpdateArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "uuid-1234-5678"
+        email:
+          type: string
+          example: "panda@example.com"
+        nickname:
+          type: string
+          example: "행복한판다"
+        provider:
+          type: string
+          example: "local"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

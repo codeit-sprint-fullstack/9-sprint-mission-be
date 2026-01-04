@@ -3,14 +3,15 @@
   "version": "1.0.1",
   "description": "panda-express-server",
   "main": "src/server.js",
-  "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=./env/.env.development src/server.js",
-    "start": "node dist/src/server.js",
-    "build": "npx swc src -d dist && node dist/src/swagger.js",
+    "prebuild": "rm -rf dist",
+    "type-check": "tsc",
+    "dev": "tsx watch --env-file=./env/.env.production src/server.js",
+    "start": "node --enable-source-maps dist/src/server.js",
+    "build": "npm run migrate:deploy && npm run generate && npx swc src -d dist && npm run copy:assets && npm run copy:prisma",
     "format": "prettier --cache --write src/**/*.js",
     "lint": "eslint --cache .",
-    "prisma": "node --env-file=./env/.env.development node_modules/prisma/build/index.js",
+    "prisma": "node --env-file=./env/.env.production node_modules/prisma/build/index.js",
     "db:push": "npm run prisma -- db push",
     "migrate:dev": "npm run prisma -- migrate dev",
     "migrate:deploy": "npm run prisma -- migrate deploy",
@@ -18,7 +19,9 @@
     "generate": "npm run prisma generate",
     "studio": "npm run prisma -- studio",
     "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
-    "test:watch": "dotenv -e ./env/.env.test -- jest --watch"
+    "test:watch": "dotenv -e ./env/.env.test -- jest --watch",
+    "copy:prisma": "cp -r src/generated dist/src",
+    "copy:assets": "cp -r src/swaggerDocs dist/src/swaggerDocs"
   },
   "lint-staged": {
     "**/*.(js.jsx.ts.tsx)": [
@@ -48,6 +51,7 @@
   },
   "homepage": "https://github.com/rklpoi5678/9-sprint-mission-be#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.958.0",
     "@faker-js/faker": "^10.0.0",
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.0.0",
@@ -61,10 +65,12 @@
     "express-jwt": "^8.5.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
+    "multer-s3": "^3.0.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pg": "^8.16.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^13.0.0",
@@ -73,8 +79,24 @@
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@swc/jest": "^0.2.39",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/morgan": "^1.9.10",
+    "@types/multer": "^2.0.0",
+    "@types/multer-s3": "^3.0.3",
     "@types/node": "^24.5.2",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.17",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
+    "@types/pg": "^8.16.0",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.50.1",
+    "@typescript-eslint/parser": "^8.50.1",
     "dotenv-cli": "^11.0.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
@@ -84,6 +106,9 @@
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "prisma": "^7.0.0",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.1"
   }
 }
