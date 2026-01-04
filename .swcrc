@@ -1,8 +1,18 @@
 {
   "jsc": {
     "target": "es2020",
+    "loose": false,
+    "externalHelpers": false,
+    "keepClassNames": true,
     "parser": {
-      "syntax": "ecmascript"
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true
     },
     "minify": {
       "compress": true,
