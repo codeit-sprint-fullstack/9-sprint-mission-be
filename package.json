@@ -20,7 +20,7 @@
     "studio": "npm run prisma -- studio",
     "test": "dotenv -e ./env/.env.test -- node --experimental-vm-modules ./node_modules/jest/bin/jest.js --detectOpenHandles",
     "test:watch": "dotenv -e ./env/.env.test -- jest --watch",
-    "copy:prisma": "cp -r src/generate dist/src",
+    "copy:prisma": "cp -r src/generated dist/src",
     "copy:assets": "cp -r src/swaggerDocs dist/src/swaggerDocs"
   },
   "lint-staged": {
