@@ -11,6 +11,7 @@ export default [
       parser: tsEslint.parser,
       parserOptions: {
         project: "./tsconfig.json",
+        tsconfigRootDir: import.meta.dirname,
       },
       ecmaVersion: 2024,
       sourceType: "module",
